@@ -1,0 +1,71 @@
+{
+  "common": {
+    "calculate": "गणना करें",
+    "reset": "रीसेट",
+    "save": "सहेजें",
+    "result": "परिणाम",
+    "inputs": "इनपुट",
+    "viewMode": "दृश्य",
+    "view2D": "2D",
+    "view3D": "3D",
+    "favorite": "पसंदीदा",
+    "unfavorite": "हटाएँ",
+    "share": "शेयर",
+    "darkMode": "डार्क मोड",
+    "lightMode": "लाइट मोड",
+    "systemMode": "सिस्टम",
+    "language": "भाषा",
+    "english": "English",
+    "hindi": "हिंदी"
+  },
+  "nav": {
+    "home": "होम",
+    "all": "सभी",
+    "favorites": "पसंदीदा",
+    "history": "इतिहास",
+    "settings": "सेटिंग्स",
+    "search": "कैलकुलेटर खोजें..."
+  },
+  "categories": {
+    "finance": "वित्त",
+    "math": "गणित",
+    "health": "स्वास्थ्य",
+    "converter": "कनवर्टर",
+    "datetime": "तारीख और समय",
+    "crypto": "क्रिप्टो और स्टॉक"
+  },
+  "home": {
+    "heroTitle": "हर कैलकुलेटर जो आपको चाहिए। एक जगह।",
+    "heroSubtitle": "65+ वित्त, गणित, स्वास्थ्य, कनवर्जन, तारीख और क्रिप्टो कैलकुलेटर। तेज़, निजी, सुंदर।",
+    "ctaExplore": "कैलकुलेटर देखें",
+    "ctaInstall": "ऐप इंस्टॉल करें"
+  },
+  "calculators": {
+    "sip": {
+      "name": "SIP कैलकुलेटर",
+      "shortDesc": "मासिक म्यूचुअल फंड SIP रिटर्न",
+      "monthlyInvestment": "मासिक निवेश",
+      "annualReturn": "अपेक्षित वार्षिक रिटर्न",
+      "duration": "अवधि (वर्ष)",
+      "investedAmount": "निवेशित राशि",
+      "estReturns": "अनुमानित लाभ",
+      "totalValue": "कुल मूल्य"
+    },
+    "basic": {
+      "name": "बेसिक कैलकुलेटर",
+      "shortDesc": "त्वरित अंकगणित"
+    },
+    "bmi": {
+      "name": "BMI कैलकुलेटर",
+      "shortDesc": "बॉडी मास इंडेक्स",
+      "height": "ऊंचाई (सेमी)",
+      "weight": "वजन (किग्रा)",
+      "bmi": "BMI",
+      "category": "श्रेणी",
+      "underweight": "कम वजन",
+      "normal": "सामान्य",
+      "overweight": "अधिक वजन",
+      "obese": "मोटापा"
+    }
+  }
+}

@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 0 0% 100%;
+  --surface: 210 20% 98%;
+  --surface-elevated: 0 0% 100%;
+  --text: 222 47% 11%;
+  --text-secondary: 215 16% 47%;
+  --text-tertiary: 215 14% 65%;
+  --border: 214 32% 91%;
+  --primary: 173 80% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 239 84% 67%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 38 92% 50%;
+  --success: 142 71% 45%;
+  --error: 0 84% 60%;
+  --finance: 173 80% 36%;
+  --math: 239 84% 67%;
+  --health: 142 71% 45%;
+  --converter: 38 92% 50%;
+  --datetime: 200 95% 50%;
+  --crypto: 280 75% 60%;
+  --ring: 173 80% 36%;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 222 47% 6%;
+  --surface: 222 47% 9%;
+  --surface-elevated: 222 47% 12%;
+  --text: 210 40% 98%;
+  --text-secondary: 215 20% 70%;
+  --text-tertiary: 215 16% 50%;
+  --border: 217 32% 18%;
+  --primary: 173 76% 49%;
+  --primary-foreground: 222 47% 6%;
+  --secondary: 234 89% 74%;
+  --secondary-foreground: 222 47% 6%;
+  --accent: 38 92% 50%;
+  --success: 142 71% 45%;
+  --error: 0 84% 60%;
+  --finance: 173 76% 49%;
+  --math: 234 89% 74%;
+  --health: 142 71% 45%;
+  --converter: 38 92% 50%;
+  --datetime: 200 95% 60%;
+  --crypto: 280 80% 70%;
+  --ring: 173 76% 49%;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-surface-elevated: hsl(var(--surface-elevated));
+  --color-text: hsl(var(--text));
+  --color-text-secondary: hsl(var(--text-secondary));
+  --color-text-tertiary: hsl(var(--text-tertiary));
+  --color-border: hsl(var(--border));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-success: hsl(var(--success));
+  --color-error: hsl(var(--error));
+  --color-finance: hsl(var(--finance));
+  --color-math: hsl(var(--math));
+  --color-health: hsl(var(--health));
+  --color-converter: hsl(var(--converter));
+  --color-datetime: hsl(var(--datetime));
+  --color-crypto: hsl(var(--crypto));
+  --color-ring: hsl(var(--ring));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--text));
+    font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass {
+    background: hsl(var(--surface-elevated) / 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
 }

@@ -1,0 +1,71 @@
+{
+  "common": {
+    "calculate": "Calculate",
+    "reset": "Reset",
+    "save": "Save",
+    "result": "Result",
+    "inputs": "Inputs",
+    "viewMode": "View",
+    "view2D": "2D",
+    "view3D": "3D",
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "share": "Share",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "systemMode": "System",
+    "language": "Language",
+    "english": "English",
+    "hindi": "हिंदी"
+  },
+  "nav": {
+    "home": "Home",
+    "all": "All",
+    "favorites": "Favorites",
+    "history": "History",
+    "settings": "Settings",
+    "search": "Search calculators..."
+  },
+  "categories": {
+    "finance": "Finance",
+    "math": "Math",
+    "health": "Health",
+    "converter": "Converters",
+    "datetime": "Date & Time",
+    "crypto": "Crypto & Stock"
+  },
+  "home": {
+    "heroTitle": "Every calculator you need. In one place.",
+    "heroSubtitle": "65+ finance, math, health, conversion, date & crypto calculators. Fast, private, beautiful.",
+    "ctaExplore": "Explore calculators",
+    "ctaInstall": "Install app"
+  },
+  "calculators": {
+    "sip": {
+      "name": "SIP Calculator",
+      "shortDesc": "Calculate returns on monthly mutual-fund SIP",
+      "monthlyInvestment": "Monthly investment",
+      "annualReturn": "Expected annual return",
+      "duration": "Duration (years)",
+      "investedAmount": "Invested amount",
+      "estReturns": "Estimated returns",
+      "totalValue": "Total value"
+    },
+    "basic": {
+      "name": "Basic Calculator",
+      "shortDesc": "Quick arithmetic"
+    },
+    "bmi": {
+      "name": "BMI Calculator",
+      "shortDesc": "Body Mass Index",
+      "height": "Height (cm)",
+      "weight": "Weight (kg)",
+      "bmi": "BMI",
+      "category": "Category",
+      "underweight": "Underweight",
+      "normal": "Normal",
+      "overweight": "Overweight",
+      "obese": "Obese"
+    }
+  }
+}
