@@ -52,7 +52,7 @@ export function Header() {
           <span className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg">
             ₹
           </span>
-          <span className="hidden sm:inline">MultiCalc</span>
+          <span className="hidden sm:inline">CalcMaster</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

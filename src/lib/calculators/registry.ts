@@ -15,3 +15,9 @@ export const calculatorRegistry: Record<string, LazyCalc> = {
 export function getCalculatorComponent(slug: string): LazyCalc | undefined {
   return calculatorRegistry[slug];
 }
+
+export function isCalculatorImplemented(slug: string): boolean {
+  return slug in calculatorRegistry;
+}
+
+export const IMPLEMENTED_SLUGS: ReadonlySet<string> = new Set(Object.keys(calculatorRegistry));

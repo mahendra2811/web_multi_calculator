@@ -20,16 +20,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "MultiCalc — 65+ calculators in one place",
-    template: "%s · MultiCalc",
+    default: "CalcMaster — 65+ calculators in one place",
+    template: "%s · CalcMaster",
   },
   description:
     "Finance, math, health, conversion, date and crypto calculators. Fast, private, beautiful — works offline.",
-  applicationName: "MultiCalc",
+  applicationName: "CalcMaster",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "MultiCalc",
+    title: "CalcMaster",
     statusBarStyle: "default",
   },
 };

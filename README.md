@@ -1,6 +1,6 @@
-# MultiCalc
+# CalcMaster
 
-A Next.js 16 web app with 65+ calculators across six categories: Finance, Math, Health, Converters, Date & Time, and Crypto/Stock. Built with Three.js, Tailwind v4, Recharts, and ported formulas from the CalcMaster Expo app.
+A Next.js 16 web app with 65+ calculators across six categories: Finance, Math, Health, Converters, Date & Time, and Crypto/Stock. Built with Three.js, Tailwind v4, Recharts, and ported formulas from the sibling CalcMaster Expo app.
 
 ## Status
 

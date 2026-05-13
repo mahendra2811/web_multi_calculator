@@ -1,4 +1,4 @@
-# MultiCalc — Production Plan
+# CalcMaster (web) — Production Plan
 
 > **Status:** Foundation complete. 3 reference calculators (Basic, SIP, BMI) shipped. 62 calculators remain. Build passes, 14/14 unit tests green.
 

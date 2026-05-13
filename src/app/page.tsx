@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { CATEGORIES, getCalculatorsByCategory } from "@/constants/calculators";
+import { ArrowRight, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import { CALCULATORS, CATEGORIES, getCalculatorsByCategory } from "@/constants/calculators";
+import { IMPLEMENTED_SLUGS } from "@/lib/calculators/registry";
 import { Icon } from "@/components/ui/Icon";
 import {
   CATEGORY_BADGE_CLASS,
@@ -13,6 +14,12 @@ import { HeroSceneClient } from "@/components/three/HeroSceneClient";
 export default async function Home() {
   const t = await getTranslations("home");
   const tCat = await getTranslations("categories");
+
+  const liveCalcs = CALCULATORS.filter((c) => IMPLEMENTED_SLUGS.has(c.id));
+  const pendingCalcs = CALCULATORS.filter((c) => !IMPLEMENTED_SLUGS.has(c.id));
+  const totalCount = CALCULATORS.length;
+  const liveCount = liveCalcs.length;
+  const progressPct = Math.round((liveCount / totalCount) * 100);
 
   return (
     <>
@@ -91,31 +98,91 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="container-page pb-16">
-        <h2 className="text-text mb-6 text-2xl font-bold">Featured calculators</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { slug: "sip", title: "SIP Calculator", desc: "Plan monthly mutual-fund investments" },
-            { slug: "emi", title: "EMI Calculator", desc: "Home & personal loan installments" },
-            { slug: "bmi", title: "BMI Calculator", desc: "Body mass index & category" },
-            { slug: "basic", title: "Basic Calculator", desc: "Everyday arithmetic" },
-            { slug: "currency-converter", title: "Currency Converter", desc: "Live FX rates" },
-            { slug: "age", title: "Age Calculator", desc: "Years, months, days" },
-          ].map((c) => (
-            <Link
-              key={c.slug}
-              href={`/calculator/${c.slug}`}
-              className="group border-border bg-surface-elevated hover:border-primary/40 rounded-xl border p-5 transition-all hover:-translate-y-1 hover:shadow-lg"
-            >
-              <h3 className="text-text font-semibold">{c.title}</h3>
-              <p className="text-text-secondary mt-1 text-sm">{c.desc}</p>
-              <span className="text-primary mt-3 inline-flex items-center gap-1 text-sm font-medium">
-                Open
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-          ))}
+      <section className="container-page py-12 lg:py-16">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-text text-2xl font-bold md:text-3xl">Roadmap</h2>
+            <p className="text-text-secondary mt-1 text-sm">
+              {liveCount} of {totalCount} calculators are live. {pendingCalcs.length} more are
+              coming.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-text-secondary">{progressPct}%</span>
+            <div className="bg-surface h-2 w-40 overflow-hidden rounded-full">
+              <div className="bg-primary h-full" style={{ width: `${progressPct}%` }} />
+            </div>
+          </div>
         </div>
+
+        <div className="text-text mb-4 flex items-center gap-2 text-sm font-semibold">
+          <CheckCircle2 className="text-success h-4 w-4" />
+          Live now · {liveCount}
+        </div>
+        <ul className="mb-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {liveCalcs.map((c) => (
+            <li key={c.id}>
+              <Link
+                href={`/calculator/${c.id}`}
+                className="group border-border bg-surface-elevated hover:border-primary/40 flex items-start gap-3 rounded-xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]}`}
+                >
+                  <Icon name={c.icon} className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-text truncate text-sm font-semibold">{c.name}</h3>
+                    <span className="bg-success/15 text-success rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                      Live
+                    </span>
+                  </div>
+                  <p className="text-text-secondary line-clamp-1 text-xs">{c.shortDesc}</p>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="text-text mb-4 flex items-center gap-2 text-sm font-semibold">
+          <Clock className="text-text-tertiary h-4 w-4" />
+          Coming soon · {pendingCalcs.length}
+        </div>
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {pendingCalcs.map((c) => (
+            <li
+              key={c.id}
+              className="border-border bg-surface-elevated/40 flex items-start gap-3 rounded-xl border p-4 opacity-70"
+            >
+              <div
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]} opacity-60`}
+              >
+                <Icon name={c.icon} className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-text truncate text-sm font-semibold">{c.name}</h3>
+                  <span className="border-border text-text-tertiary rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                    Soon
+                  </span>
+                </div>
+                <p className="text-text-secondary line-clamp-1 text-xs">{c.shortDesc}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <p className="text-text-secondary mt-8 text-center text-sm">
+          Want a calculator prioritized? Email{" "}
+          <a
+            href="mailto:mahendrapuniya92@gmail.com"
+            className="text-primary font-medium hover:underline"
+          >
+            mahendrapuniya92@gmail.com
+          </a>
+          .
+        </p>
       </section>
     </>
   );
