@@ -3,14 +3,14 @@ title: 'Discount calculator: what "70% off + extra 20% off" actually means'
 excerpt: "Stacked discounts, GST inclusion, MRP vs final price — the math behind the price tags retailers hope you don't compute."
 kind: calculator
 category: finance
-calculatorSlug: discount-calculator
+calculatorSlug: discount
 tags: [discount, sale, shopping, retail]
 publishedAt: "2026-05-13"
 ---
 
 E-commerce thrives on the gap between _displayed savings_ and _actual savings_. A "70% off + 20% extra" sticker is not 90% off — it's 76%. A "MRP ₹2,499, deal price ₹999" is not 60% off — once you remove GST from both sides, it's closer to 55%. The discount calculator handles all of this.
 
-> [Open the Discount Calculator](/calculator/discount-calculator) and use it the next time you see a sale.
+> [Open the Discount Calculator](/calculator/discount) and use it the next time you see a sale.
 
 ## Stacked discounts: the multiplication rule
 
@@ -45,4 +45,4 @@ In India, MRP is _maximum_ retail price. Many products carry an MRP printed at 2
 
 ## Run yours
 
-Open the [Discount Calculator](/calculator/discount-calculator). Punch in the stickers. Decide with the actual number, not the marketing one.
+Open the [Discount Calculator](/calculator/discount). Punch in the stickers. Decide with the actual number, not the marketing one.

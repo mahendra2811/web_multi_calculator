@@ -3,14 +3,14 @@ title: "Percentage calculator: the four operations you keep mixing up"
 excerpt: "% of, % change, add %, subtract % — all four modes, the formulas behind them, and the moments each one actually applies."
 kind: calculator
 category: math
-calculatorSlug: percentage-calculator
+calculatorSlug: percentage
 tags: [percentage, math, basics]
 publishedAt: "2026-05-13"
 ---
 
 Percentages are the simplest math everyone gets wrong under pressure. Here are the four common operations, what they mean, and when to use each.
 
-> [Open the Percentage Calculator](/calculator/percentage-calculator) and pick the mode.
+> [Open the Percentage Calculator](/calculator/percentage) and pick the mode.
 
 ## 1. "X% of Y"
 
@@ -65,4 +65,4 @@ This is why losses are mathematically asymmetric with gains, and why "don't lose
 
 ## Run yours
 
-Open the [Percentage Calculator](/calculator/percentage-calculator). Pick mode. Get answer. Move on with your life.
+Open the [Percentage Calculator](/calculator/percentage). Pick mode. Get answer. Move on with your life.
