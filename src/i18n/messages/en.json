@@ -21,6 +21,7 @@
   "nav": {
     "home": "Home",
     "all": "All",
+    "blog": "Blog",
     "favorites": "Favorites",
     "history": "History",
     "settings": "Settings",

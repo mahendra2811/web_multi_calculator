@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getAllCalculators, getCalculatorBySlug } from "@/constants/calculators";
+import { getBlogProvider } from "@/lib/blog/provider";
+import { CalculatorBlogLinks } from "@/components/calculator/CalculatorBlogLinks";
 import { CalculatorLoader } from "./CalculatorLoader";
 
 interface PageParams {
@@ -27,11 +29,19 @@ export default async function CalculatorPage({ params }: PageParams) {
   const meta = getCalculatorBySlug(slug);
   if (!meta) notFound();
 
+  const provider = await getBlogProvider();
+  const blogs = await provider.byCalculator(meta.id);
+
   return (
-    <Suspense
-      fallback={<div className="container-page text-text-secondary py-10">Loading calculator…</div>}
-    >
-      <CalculatorLoader meta={meta} />
-    </Suspense>
+    <>
+      <Suspense
+        fallback={
+          <div className="container-page text-text-secondary py-10">Loading calculator…</div>
+        }
+      >
+        <CalculatorLoader meta={meta} />
+      </Suspense>
+      <CalculatorBlogLinks posts={blogs} calculatorName={meta.name} />
+    </>
   );
 }

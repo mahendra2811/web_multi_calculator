@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, History, Home, Menu, Search, Settings } from "lucide-react";
+import { BookOpen, Heart, History, Home, Menu, Search, Settings } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { useTranslations } from "next-intl";
 
 const NAV_LINKS = [
   { href: "/", label: "home", icon: Home },
+  { href: "/blog", label: "blog", icon: BookOpen },
   { href: "/favorites", label: "favorites", icon: Heart },
   { href: "/history", label: "history", icon: History },
   { href: "/settings", label: "settings", icon: Settings },
