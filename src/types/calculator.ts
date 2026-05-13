@@ -24,11 +24,17 @@ export interface CalculatorMeta {
   id: string;
   name: string;
   shortDesc: string;
+  /** Optional longer paragraph shown only in the "detailed" listing view. */
+  longDesc?: string;
   category: Category;
   icon: string;
   keywords?: string[];
   hasChart?: boolean;
   has3DView?: boolean;
+  /** Optional Hindi translations (top calculators only). */
+  nameHi?: string;
+  shortDescHi?: string;
+  longDescHi?: string;
 }
 
 export interface CategoryMeta {

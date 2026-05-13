@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import type { Metadata } from "next";
 import { CATEGORIES, getCalculatorsByCategory, getCategoryBySlug } from "@/constants/calculators";
 import { Icon } from "@/components/ui/Icon";
-import {
-  CATEGORY_BADGE_CLASS,
-  CATEGORY_TEXT_CLASS,
-} from "@/components/calculator/category-classes";
+import { CATEGORY_BADGE_CLASS } from "@/components/calculator/category-classes";
+import { CalculatorList } from "@/components/calculator/CalculatorList";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { absoluteUrl, SITE } from "@/lib/site";
 import type { Category } from "@/types/calculator";
 
 interface Params {
@@ -16,11 +17,21 @@ export async function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.id }));
 }
 
-export async function generateMetadata({ params }: Params) {
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { category } = await params;
   const meta = getCategoryBySlug(category);
   if (!meta) return {};
-  return { title: meta.name, description: meta.shortDesc };
+  const canonical = `/category/${category}`;
+  return {
+    title: meta.name,
+    description: meta.shortDesc,
+    alternates: { canonical },
+    openGraph: {
+      title: `${meta.name} · ${SITE.name}`,
+      description: meta.shortDesc,
+      url: absoluteUrl(canonical),
+    },
+  };
 }
 
 export default async function CategoryPage({ params }: Params) {
@@ -31,44 +42,30 @@ export default async function CategoryPage({ params }: Params) {
   const items = getCalculatorsByCategory(cat.id as Category);
 
   return (
-    <div className="container-page py-10">
-      <header className="mb-8 flex items-center gap-4">
-        <div
-          className={`flex h-14 w-14 items-center justify-center rounded-xl ${CATEGORY_BADGE_CLASS[cat.id]}`}
-        >
-          <Icon name={cat.icon} className="h-7 w-7" />
-        </div>
-        <div>
-          <h1 className="text-text text-3xl font-bold">{cat.name}</h1>
-          <p className="text-text-secondary text-sm">
-            {cat.shortDesc} · {items.length} calculators
-          </p>
-        </div>
-      </header>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((c) => (
-          <Link
-            key={c.id}
-            href={`/calculator/${c.id}`}
-            className="group border-border bg-surface-elevated hover:border-primary/40 flex items-start gap-4 rounded-xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: "/" },
+          { name: cat.name, url: `/category/${cat.id}` },
+        ])}
+      />
+      <Breadcrumb items={[{ label: cat.name }]} />
+      <div className="container-page py-6 lg:py-10">
+        <header className="mb-8 flex items-start gap-4">
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl sm:h-14 sm:w-14 ${CATEGORY_BADGE_CLASS[cat.id]}`}
           >
-            <div
-              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]}`}
-            >
-              <Icon name={c.icon} className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <h3 className="text-text truncate font-semibold">{c.name}</h3>
-              <p className="text-text-secondary mt-0.5 line-clamp-2 text-sm">{c.shortDesc}</p>
-              <span
-                className={`mt-2 inline-flex items-center text-xs font-semibold ${CATEGORY_TEXT_CLASS[c.category]}`}
-              >
-                Open →
-              </span>
-            </div>
-          </Link>
-        ))}
+            <Icon name={cat.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-text text-2xl font-bold sm:text-3xl">{cat.name}</h1>
+            <p className="text-text-secondary mt-1 text-sm">
+              {cat.shortDesc} · {items.length} calculators
+            </p>
+          </div>
+        </header>
+        <CalculatorList items={items} emptyText="No calculators in this category yet." />
       </div>
-    </div>
+    </>
   );
 }

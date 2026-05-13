@@ -4,7 +4,15 @@ import type { Metadata } from "next";
 import { getAllCalculators, getCalculatorBySlug, getCategoryBySlug } from "@/constants/calculators";
 import { getBlogProvider } from "@/lib/blog/provider";
 import { CalculatorBlogLinks } from "@/components/calculator/CalculatorBlogLinks";
-import { JsonLd, breadcrumbSchema, softwareApplicationSchema } from "@/components/seo/JsonLd";
+import { FaqSection } from "@/components/calculator/FaqSection";
+import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import {
+  JsonLd,
+  breadcrumbSchema,
+  faqSchema,
+  softwareApplicationSchema,
+} from "@/components/seo/JsonLd";
+import { getFaqsFor } from "@/lib/faqs";
 import { absoluteUrl, SITE } from "@/lib/site";
 import { CalculatorLoader } from "./CalculatorLoader";
 
@@ -48,6 +56,7 @@ export default async function CalculatorPage({ params }: PageParams) {
   const blogs = await provider.byCalculator(meta.id);
   const category = getCategoryBySlug(meta.category);
   const url = absoluteUrl(`/calculator/${meta.id}`);
+  const faqs = getFaqsFor(meta);
 
   const schemas = [
     softwareApplicationSchema({
@@ -61,11 +70,18 @@ export default async function CalculatorPage({ params }: PageParams) {
       { name: category?.name ?? meta.category, url: `/category/${meta.category}` },
       { name: meta.name, url: `/calculator/${meta.id}` },
     ]),
+    faqSchema(faqs.map((f) => ({ question: f.q, answer: f.a }))),
   ];
 
   return (
     <>
       <JsonLd data={schemas} />
+      <Breadcrumb
+        items={[
+          { label: category?.name ?? meta.category, href: `/category/${meta.category}` },
+          { label: meta.name },
+        ]}
+      />
       <Suspense
         fallback={
           <div className="container-page text-text-secondary py-10">Loading calculator…</div>
@@ -74,6 +90,7 @@ export default async function CalculatorPage({ params }: PageParams) {
         <CalculatorLoader meta={meta} />
       </Suspense>
       <CalculatorBlogLinks posts={blogs} calculatorName={meta.name} />
+      <FaqSection faqs={faqs} calculatorName={meta.name} />
     </>
   );
 }

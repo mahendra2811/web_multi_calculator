@@ -6,4 +6,5 @@ export const STORAGE_KEYS = {
   recents: "mcw:recents",
   settings: "mcw:settings",
   cloudSync: "mcw:cloud-sync",
+  listView: "mcw:list-view",
 } as const;

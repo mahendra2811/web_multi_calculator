@@ -62,6 +62,26 @@ export const useHistory = create<HistoryState>()(
   ),
 );
 
+export type ListView = "compact" | "grid" | "detailed";
+
+interface ListViewState {
+  view: ListView;
+  setView: (v: ListView) => void;
+}
+
+export const useListView = create<ListViewState>()(
+  persist(
+    (set) => ({
+      view: "grid",
+      setView: (view) => set({ view }),
+    }),
+    {
+      name: STORAGE_KEYS.listView,
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
+
 interface RecentsState {
   ids: string[];
   touch: (id: string) => void;

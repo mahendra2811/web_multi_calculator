@@ -20,8 +20,10 @@ export function Slider({ className, label, valueLabel, ...props }: SliderProps) 
       <input
         type="range"
         className={cn(
-          "bg-border accent-primary h-2 w-full cursor-pointer appearance-none rounded-full",
-          "[&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full",
+          "bg-border accent-primary h-2 w-full cursor-pointer touch-none appearance-none rounded-full",
+          // Bigger thumb on mobile for easier touch (24px), smaller on desktop (18px).
+          "[&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md sm:[&::-webkit-slider-thumb]:h-[18px] sm:[&::-webkit-slider-thumb]:w-[18px]",
+          "[&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:cursor-grab [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 sm:[&::-moz-range-thumb]:h-[18px] sm:[&::-moz-range-thumb]:w-[18px]",
           className,
         )}
         {...props}
