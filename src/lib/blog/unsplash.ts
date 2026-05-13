@@ -28,6 +28,54 @@ export const CATEGORY_COVERS: Record<Category, { id: string; alt: string }> = {
     id: "photo-1639762681485-074b7f938ba0",
     alt: "Bitcoin coins on a candlestick chart screen — crypto theme",
   },
+  "finance-india": {
+    id: "photo-1611532736597-de2d4265fba3",
+    alt: "Indian rupee notes — Indian finance",
+  },
+  geometry: {
+    id: "photo-1635372722656-389f87a941b7",
+    alt: "Geometric shapes diagram",
+  },
+  construction: {
+    id: "photo-1503387762-592deb58ef4e",
+    alt: "Construction site with cranes",
+  },
+  automotive: {
+    id: "photo-1502877338535-766e1452684a",
+    alt: "Car dashboard",
+  },
+  physics: {
+    id: "photo-1635070041078-e363dbe005cb",
+    alt: "Physics equations on chalkboard",
+  },
+  chemistry: {
+    id: "photo-1532187863486-abf9dbad1b69",
+    alt: "Lab beakers with colored liquids",
+  },
+  electrical: {
+    id: "photo-1610018556010-6a11691bc905",
+    alt: "Circuit board with resistors",
+  },
+  cooking: {
+    id: "photo-1556909114-f6e7ad7d3136",
+    alt: "Kitchen with measuring cups",
+  },
+  lifestyle: {
+    id: "photo-1499209974431-9dddcece7f88",
+    alt: "Lifestyle still-life",
+  },
+  developer: {
+    id: "photo-1555066931-4365d14bab8c",
+    alt: "Code on a screen",
+  },
+  weather: {
+    id: "photo-1561553873-e8491a564fd0",
+    alt: "Clouds and sky",
+  },
+  sports: {
+    id: "photo-1540747913346-19e32dc3e97e",
+    alt: "Sports equipment",
+  },
 };
 
 export const CALCULATOR_COVERS: Record<string, { id: string; alt: string }> = {

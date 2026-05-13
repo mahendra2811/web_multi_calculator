@@ -82,12 +82,17 @@ export const calculatorRegistry: Record<string, LazyCalc> = {
   "position-size": lazy(() => import("@/calculators/crypto/PositionSizeCalculator")),
 };
 
+import { SCHEMA_SLUGS } from "./schemas";
+
 export function getCalculatorComponent(slug: string): LazyCalc | undefined {
   return calculatorRegistry[slug];
 }
 
 export function isCalculatorImplemented(slug: string): boolean {
-  return slug in calculatorRegistry;
+  return slug in calculatorRegistry || SCHEMA_SLUGS.has(slug);
 }
 
-export const IMPLEMENTED_SLUGS: ReadonlySet<string> = new Set(Object.keys(calculatorRegistry));
+export const IMPLEMENTED_SLUGS: ReadonlySet<string> = new Set([
+  ...Object.keys(calculatorRegistry),
+  ...SCHEMA_SLUGS,
+]);

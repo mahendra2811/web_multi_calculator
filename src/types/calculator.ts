@@ -1,6 +1,24 @@
 import type { LucideIcon } from "lucide-react";
 
-export type Category = "finance" | "math" | "health" | "converter" | "datetime" | "crypto";
+export type Category =
+  | "finance"
+  | "finance-india"
+  | "math"
+  | "health"
+  | "converter"
+  | "datetime"
+  | "crypto"
+  | "geometry"
+  | "construction"
+  | "automotive"
+  | "physics"
+  | "chemistry"
+  | "electrical"
+  | "cooking"
+  | "lifestyle"
+  | "developer"
+  | "weather"
+  | "sports";
 
 export interface CalculatorMeta {
   id: string;
