@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { track } from "@/lib/analytics/events";
 
 export type Theme = "light" | "dark" | "system";
 export type ResolvedTheme = "light" | "dark";
@@ -66,6 +67,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
     window.localStorage.setItem(STORAGE_KEYS.theme, t);
+    track.themeChange(t);
   }, []);
 
   const toggle = useCallback(() => {

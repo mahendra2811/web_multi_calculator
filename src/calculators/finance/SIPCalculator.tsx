@@ -13,6 +13,7 @@ import { formatINR } from "@/lib/format";
 import { useHistory } from "@/lib/storage/stores";
 import { useTranslations } from "next-intl";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
+import { track } from "@/lib/analytics/events";
 
 const GrowthChart3D = dynamic(() => import("@/components/three/GrowthChart3D"), {
   ssr: false,
@@ -51,6 +52,7 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
         inputs: { monthly, rate, years },
         result: { invested: result.invested, returns: result.returns, total: result.total },
       });
+      track.calculatorCalculate(meta.id);
     }, 800);
     return () => clearTimeout(tid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,14 +148,20 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
                 <Button
                   size="sm"
                   variant={view3D ? "ghost" : "primary"}
-                  onClick={() => setView3D(false)}
+                  onClick={() => {
+                    setView3D(false);
+                    track.view3DToggle(meta.id, "2d");
+                  }}
                 >
                   {tCommon("view2D")}
                 </Button>
                 <Button
                   size="sm"
                   variant={view3D ? "primary" : "ghost"}
-                  onClick={() => setView3D(true)}
+                  onClick={() => {
+                    setView3D(true);
+                    track.view3DToggle(meta.id, "3d");
+                  }}
                 >
                   {tCommon("view3D")}
                 </Button>

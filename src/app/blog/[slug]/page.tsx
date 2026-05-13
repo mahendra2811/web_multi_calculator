@@ -6,7 +6,10 @@ import { getBlogProvider } from "@/lib/blog/provider";
 import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogHero } from "@/components/blog/BlogHero";
 import { RelatedBlogs } from "@/components/blog/RelatedBlogs";
-import { getCalculatorBySlug } from "@/constants/calculators";
+import { getCalculatorBySlug, getCategoryBySlug } from "@/constants/calculators";
+import { JsonLd, articleSchema, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { absoluteUrl } from "@/lib/site";
+import { BlogTracker } from "@/components/blog/BlogTracker";
 
 interface Params {
   params: Promise<{ slug: string }>;
@@ -25,14 +28,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const provider = await getBlogProvider();
   const post = await provider.get(slug);
   if (!post) return {};
+  const canonical = `/blog/${slug}`;
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: "article",
       publishedTime: post.publishedAt,
+      url: absoluteUrl(canonical),
       images: post.coverImage ? [{ url: post.coverImage, alt: post.coverAlt }] : undefined,
     },
     twitter: {
@@ -51,13 +57,32 @@ export default async function BlogPostPage({ params }: Params) {
   if (!post) notFound();
 
   const calc = post.calculatorSlug ? getCalculatorBySlug(post.calculatorSlug) : undefined;
+  const cat = post.category ? getCategoryBySlug(post.category) : undefined;
 
   // Pull related posts: same category, exclude this one, limit 3
   const related = post.category ? await provider.byCategory(post.category) : [];
   const relatedFiltered = related.filter((p) => p.slug !== slug).slice(0, 3);
 
+  const schemas = [
+    articleSchema({
+      title: post.title,
+      description: post.excerpt,
+      url: absoluteUrl(`/blog/${slug}`),
+      image: post.coverImage,
+      publishedAt: post.publishedAt,
+    }),
+    breadcrumbSchema([
+      { name: "Home", url: "/" },
+      { name: "Blog", url: "/blog" },
+      ...(cat ? [{ name: cat.name, url: `/blog/category/${cat.id}` }] : []),
+      { name: post.title, url: `/blog/${slug}` },
+    ]),
+  ];
+
   return (
     <>
+      <JsonLd data={schemas} />
+      <BlogTracker slug={post.slug} kind={post.kind} />
       <BlogHero post={post} />
 
       <main className="container-page max-w-4xl">

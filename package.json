@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
+    "@next/third-parties": "^16.2.6",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@supabase/ssr": "^0.10.3",
@@ -47,6 +48,7 @@
     "remark-html": "^16.0.1",
     "tailwind-merge": "^3.6.0",
     "three": "^0.184.0",
+    "web-vitals": "^5.2.0",
     "zustand": "^5.0.13"
   },
   "devDependencies": {

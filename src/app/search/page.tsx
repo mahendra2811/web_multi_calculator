@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { CALCULATORS } from "@/constants/calculators";
@@ -10,6 +10,7 @@ import {
   CATEGORY_BADGE_CLASS,
   CATEGORY_TEXT_CLASS,
 } from "@/components/calculator/category-classes";
+import { track } from "@/lib/analytics/events";
 
 export default function SearchPage() {
   const [q, setQ] = useState("");
@@ -23,6 +24,13 @@ export default function SearchPage() {
         c.id.toLowerCase().includes(query),
     );
   }, [q]);
+
+  useEffect(() => {
+    const term = q.trim();
+    if (term.length < 2) return;
+    const timer = setTimeout(() => track.searchQuery(term, matches.length), 600);
+    return () => clearTimeout(timer);
+  }, [q, matches.length]);
 
   return (
     <div className="container-page py-10">

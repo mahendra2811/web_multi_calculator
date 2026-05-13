@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useTheme, type Theme } from "@/contexts/ThemeProvider";
 import { LOCALE_LABELS, LOCALES, type Locale } from "@/i18n/config";
+import { track } from "@/lib/analytics/events";
 
 const THEMES: Theme[] = ["light", "dark", "system"];
 
 function persistLocale(l: Locale) {
   document.cookie = `mcw:locale=${l}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+  track.localeChange(l);
   window.location.reload();
 }
 
