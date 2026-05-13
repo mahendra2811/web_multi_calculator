@@ -5,7 +5,9 @@ import { Icon } from "@/components/ui/Icon";
 import { CATEGORY_BADGE_CLASS } from "@/components/calculator/category-classes";
 import { CalculatorList } from "@/components/calculator/CalculatorList";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
-import { JsonLd, breadcrumbSchema } from "@/components/seo/JsonLd";
+import { FaqSection } from "@/components/calculator/FaqSection";
+import { JsonLd, breadcrumbSchema, faqSchema } from "@/components/seo/JsonLd";
+import { CATEGORY_FAQS } from "@/lib/faqs/categories";
 import { absoluteUrl, SITE } from "@/lib/site";
 import type { Category } from "@/types/calculator";
 
@@ -40,14 +42,20 @@ export default async function CategoryPage({ params }: Params) {
   if (!cat) notFound();
 
   const items = getCalculatorsByCategory(cat.id as Category);
+  const faqs = CATEGORY_FAQS[cat.id as Category] ?? [];
 
   return (
     <>
       <JsonLd
-        data={breadcrumbSchema([
-          { name: "Home", url: "/" },
-          { name: cat.name, url: `/category/${cat.id}` },
-        ])}
+        data={[
+          breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: cat.name, url: `/category/${cat.id}` },
+          ]),
+          ...(faqs.length > 0
+            ? [faqSchema(faqs.map((f) => ({ question: f.q, answer: f.a })))]
+            : []),
+        ]}
       />
       <Breadcrumb items={[{ label: cat.name }]} />
       <div className="container-page py-6 lg:py-10">
@@ -66,6 +74,7 @@ export default async function CategoryPage({ params }: Params) {
         </header>
         <CalculatorList items={items} emptyText="No calculators in this category yet." />
       </div>
+      {faqs.length > 0 && <FaqSection faqs={faqs} calculatorName={cat.name} />}
     </>
   );
 }

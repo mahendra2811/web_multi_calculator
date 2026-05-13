@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { Analytics } from "@/components/analytics/Analytics";
 import { WebVitals } from "@/components/analytics/WebVitals";
+import { SearchPalette } from "@/components/search/SearchPalette";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/seo/JsonLd";
 import { SITE } from "@/lib/site";
 import { CALCULATOR_COUNT_LABEL } from "@/constants/stats";
@@ -134,6 +135,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <main className="flex-1 pb-20 md:pb-0">{children}</main>
           <Footer />
           <MobileTabBar />
+          <SearchPalette />
         </Providers>
         <Analytics />
         <WebVitals />

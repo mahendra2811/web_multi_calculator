@@ -7,6 +7,10 @@ import { IMPLEMENTED_SLUGS } from "@/lib/calculators/registry";
 import { CalculatorList } from "@/components/calculator/CalculatorList";
 import { CategoryList } from "@/components/calculator/CategoryList";
 import { HeroSceneClient } from "@/components/three/HeroSceneClient";
+import { HeroSearchTrigger } from "@/components/search/HeroSearchTrigger";
+import { FaqSection } from "@/components/calculator/FaqSection";
+import { JsonLd, faqSchema } from "@/components/seo/JsonLd";
+import { HOME_FAQS } from "@/lib/faqs/home";
 
 const POPULAR_SLUGS = ["sip", "emi", "bmi", "compound-interest", "percentage", "gst"] as const;
 
@@ -41,21 +45,16 @@ export default async function Home() {
           <p className="text-text-secondary mt-5 max-w-2xl text-base text-balance md:text-lg">
             {t("heroSubtitle", { count: CALCULATOR_COUNT_LABEL })}
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="#categories"
-              className="group bg-primary text-primary-foreground shadow-primary/20 inline-flex h-12 items-center gap-2 rounded-xl px-6 text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5"
-            >
-              {t("ctaExplore")}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="/search"
-              className="border-border bg-surface-elevated/70 text-text hover:bg-surface inline-flex h-12 items-center rounded-xl border px-6 text-sm font-semibold backdrop-blur transition-colors"
-            >
-              Search by name
-            </Link>
+          <div className="mt-8 w-full">
+            <HeroSearchTrigger />
           </div>
+          <Link
+            href="#categories"
+            className="group bg-primary text-primary-foreground shadow-primary/20 mt-6 inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5"
+          >
+            {t("ctaExplore")}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </div>
       </section>
 
@@ -98,6 +97,9 @@ export default async function Home() {
           }))}
         />
       </section>
+
+      <JsonLd data={faqSchema(HOME_FAQS.map((f) => ({ question: f.q, answer: f.a })))} />
+      <FaqSection faqs={HOME_FAQS} calculatorName="CalcMaster" />
     </>
   );
 }

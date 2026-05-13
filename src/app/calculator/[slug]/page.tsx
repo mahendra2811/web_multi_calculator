@@ -4,8 +4,11 @@ import type { Metadata } from "next";
 import { getAllCalculators, getCalculatorBySlug, getCategoryBySlug } from "@/constants/calculators";
 import { getBlogProvider } from "@/lib/blog/provider";
 import { CalculatorBlogLinks } from "@/components/calculator/CalculatorBlogLinks";
+import { CalculatorContent } from "@/components/calculator/CalculatorContent";
 import { FaqSection } from "@/components/calculator/FaqSection";
+import { RelatedCalculators } from "@/components/calculator/RelatedCalculators";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { getCalculatorContentHtml } from "@/lib/calculators/content";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -57,6 +60,7 @@ export default async function CalculatorPage({ params }: PageParams) {
   const category = getCategoryBySlug(meta.category);
   const url = absoluteUrl(`/calculator/${meta.id}`);
   const faqs = getFaqsFor(meta);
+  const contentHtml = await getCalculatorContentHtml(meta.id);
 
   const schemas = [
     softwareApplicationSchema({
@@ -89,7 +93,9 @@ export default async function CalculatorPage({ params }: PageParams) {
       >
         <CalculatorLoader meta={meta} />
       </Suspense>
+      {contentHtml && <CalculatorContent html={contentHtml} title={`Guide: ${meta.name}`} />}
       <CalculatorBlogLinks posts={blogs} calculatorName={meta.name} />
+      <RelatedCalculators current={meta} />
       <FaqSection faqs={faqs} calculatorName={meta.name} />
     </>
   );

@@ -18,9 +18,9 @@ export function FaqSection({ faqs, calculatorName }: Props) {
           <h2 className="text-text text-xl font-bold">
             Frequently asked about the {calculatorName}
           </h2>
-          <p className="text-text-secondary text-sm">
+          {/* <p className="text-text-secondary text-sm">
             {faqs.length} questions about how it works and when to use it.
-          </p>
+          </p> */}
         </div>
       </header>
 

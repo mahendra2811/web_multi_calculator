@@ -1,18 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Heart, History, Home, Menu, Search, Settings } from "lucide-react";
+import { useState } from "react";
+import { Menu, Search } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Button } from "@/components/ui/Button";
-import { useTranslations } from "next-intl";
+import { getCategoryBySlug } from "@/constants/calculators";
+import { HeaderCategoryMenu } from "./HeaderCategoryMenu";
+import { HeaderAllCategoriesMenu } from "./HeaderAllCategoriesMenu";
+import { HeaderProfileMenu } from "./HeaderProfileMenu";
+import { MobileDrawer } from "./MobileDrawer";
+import { useSearchPalette } from "@/lib/storage/search-palette";
 
-const NAV_LINKS = [
-  { href: "/", label: "home", icon: Home },
-  { href: "/blog", label: "blog", icon: BookOpen },
-  { href: "/favorites", label: "favorites", icon: Heart },
-  { href: "/history", label: "history", icon: History },
-  { href: "/settings", label: "settings", icon: Settings },
-] as const;
+// Top 3 most-traffic categories
+const TOP_CAT_IDS = ["finance", "math", "health"] as const;
 
 function ThemeToggle() {
   const { resolvedTheme, toggle } = useTheme();
@@ -45,45 +46,71 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function Header() {
-  const t = useTranslations("nav");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const openSearch = useSearchPalette((s) => s.setOpen);
+
+  const topCategories = TOP_CAT_IDS.map((id) => getCategoryBySlug(id)).filter(
+    (c): c is NonNullable<ReturnType<typeof getCategoryBySlug>> => Boolean(c),
+  );
+
   return (
-    <header className="border-border bg-background/80 sticky top-0 z-40 border-b backdrop-blur-md">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="text-text flex items-center gap-2 font-bold">
-          <span className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg">
-            ₹
-          </span>
-          <span className="hidden sm:inline">CalcMaster</span>
-        </Link>
-
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map(({ href, label, icon: I }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-text-secondary hover:bg-surface hover:text-text flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-            >
-              <I className="h-4 w-4" />
-              {t(label)}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
+    <>
+      <header className="border-border bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md">
+        <div className="container-page flex h-16 items-center justify-between gap-2 sm:gap-4">
           <Link
-            href="/search"
-            className="text-text hover:bg-surface flex h-10 w-10 items-center justify-center rounded-lg md:w-auto md:gap-2 md:px-3"
-            aria-label="Search"
+            href="/"
+            className="text-text flex shrink-0 items-center gap-2 font-bold"
+            aria-label="CalcMaster home"
           >
-            <Search className="h-5 w-5" />
-            <span className="text-text-secondary hidden text-sm lg:inline">{t("search")}</span>
+            <span className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg">
+              ₹
+            </span>
+            <span className="hidden sm:inline">CalcMaster</span>
           </Link>
-          <ThemeToggle />
-          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Menu">
-            <Menu className="h-5 w-5" />
-          </Button>
+
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-0.5 md:flex">
+            {topCategories.map((c) => (
+              <HeaderCategoryMenu key={c.id} category={c} />
+            ))}
+            <HeaderAllCategoriesMenu />
+            <Link
+              href="/blog"
+              className="text-text-secondary hover:bg-surface hover:text-text rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            >
+              Blog
+            </Link>
+          </nav>
+
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <button
+              onClick={() => openSearch(true)}
+              aria-label="Open search"
+              className="border-border bg-surface-elevated/60 hover:bg-surface text-text-secondary hover:text-text flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-sm transition-colors sm:gap-3 sm:px-3 sm:py-2"
+            >
+              <Search className="h-4 w-4" />
+              <span className="hidden lg:inline">Search…</span>
+              <kbd className="border-border text-text-tertiary hidden rounded border px-1.5 py-0.5 font-mono text-[10px] lg:inline">
+                ⌘K
+              </kbd>
+            </button>
+            <ThemeToggle />
+            <div className="hidden md:flex">
+              <HeaderProfileMenu />
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              aria-label="Open menu"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    </>
   );
 }
