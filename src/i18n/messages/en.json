@@ -37,7 +37,7 @@
   },
   "home": {
     "heroTitle": "Every calculator you need. In one place.",
-    "heroSubtitle": "65+ finance, math, health, conversion, date & crypto calculators. Fast, private, beautiful.",
+    "heroSubtitle": "{count} finance, math, health, conversion, date & crypto calculators. Fast, private, beautiful.",
     "ctaExplore": "Explore calculators",
     "ctaInstall": "Install app"
   },

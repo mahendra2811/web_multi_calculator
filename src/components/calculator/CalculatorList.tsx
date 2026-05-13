@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ArrowRight, LayoutGrid, List, Rows3 } from "lucide-react";
+import { ArrowRight, Grid3x3, LayoutGrid, List, Rows3 } from "lucide-react";
 import { useListView, type ListView } from "@/lib/storage/stores";
 import {
   CATEGORY_BADGE_CLASS,
@@ -23,6 +23,7 @@ interface Props {
 
 const VIEW_BUTTONS: Array<{ id: ListView; label: string; Icon: typeof LayoutGrid }> = [
   { id: "compact", label: "Compact", Icon: Rows3 },
+  { id: "small", label: "Small", Icon: Grid3x3 },
   { id: "grid", label: "Grid", Icon: LayoutGrid },
   { id: "detailed", label: "Detailed", Icon: List },
 ];
@@ -87,6 +88,29 @@ export function CalculatorList({
               >
                 <Icon name={c.icon} className="h-3.5 w-3.5" />
                 <span className="text-text max-w-[180px] truncate">{displayName(c, locale)}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {view === "small" && (
+        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          {items.map((c) => (
+            <li key={c.id}>
+              <Link
+                href={`/calculator/${c.id}`}
+                title={displayName(c, locale)}
+                className="group border-border bg-surface-elevated hover:border-primary/40 flex h-28 flex-col items-center justify-center gap-2 rounded-xl border p-3 text-center transition-all hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]}`}
+                >
+                  <Icon name={c.icon} className="h-5 w-5" />
+                </div>
+                <span className="text-text line-clamp-2 text-xs leading-tight font-medium">
+                  {displayName(c, locale)}
+                </span>
               </Link>
             </li>
           ))}

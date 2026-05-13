@@ -62,7 +62,7 @@ export const useHistory = create<HistoryState>()(
   ),
 );
 
-export type ListView = "compact" | "grid" | "detailed";
+export type ListView = "compact" | "small" | "grid" | "detailed";
 
 interface ListViewState {
   view: ListView;

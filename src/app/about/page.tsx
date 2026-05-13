@@ -1,26 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE } from "@/lib/site";
+import { CALCULATOR_COUNT_LABEL, TOTAL_CATEGORIES } from "@/constants/stats";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About CalcMaster.",
+  description: `About ${SITE.name}.`,
 };
 
-const FEEDBACK_EMAIL = "mahendrapuniya92@gmail.com";
+const FEEDBACK_EMAIL = SITE.author.email;
 
 export default function AboutPage() {
   return (
     <div className="container-page max-w-2xl py-12">
-      <h1 className="text-text text-3xl font-bold">About CalcMaster</h1>
+      <h1 className="text-text text-3xl font-bold">About {SITE.name}</h1>
       <p className="text-text-secondary mt-4">
-        CalcMaster is a free collection of calculators for everyday finance, math, health, unit
+        {SITE.name} is a free collection of calculators for everyday finance, math, health, unit
         conversion, date, and crypto/stock tasks. It runs entirely in your browser, works offline,
         and tracks nothing.
       </p>
 
       <h2 className="text-text mt-8 text-lg font-semibold">What&apos;s inside</h2>
       <ul className="text-text-secondary mt-3 list-disc space-y-1 pl-5">
-        <li>65+ calculators across six categories</li>
+        <li>
+          {CALCULATOR_COUNT_LABEL} calculators across {TOTAL_CATEGORIES} categories
+        </li>
         <li>Light &amp; dark themes</li>
         <li>English &amp; हिंदी</li>
         <li>Installable as an app (PWA)</li>

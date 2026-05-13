@@ -1,8 +1,9 @@
 import { ImageResponse } from "next/og";
 import { SITE } from "@/lib/site";
+import { CALCULATOR_COUNT_LABEL } from "@/constants/stats";
 
 export const runtime = "edge";
-export const alt = `${SITE.name} — 65+ calculators in one place`;
+export const alt = `${SITE.name} — ${CALCULATOR_COUNT_LABEL} calculators in one place`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -50,7 +51,7 @@ export default async function Image() {
           maxWidth: 1000,
         }}
       >
-        65+ calculators.
+        {CALCULATOR_COUNT_LABEL} calculators.
         <br />
         One fast, private app.
       </div>

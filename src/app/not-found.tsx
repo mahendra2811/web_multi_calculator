@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Home, Shuffle, RefreshCw, Calculator } from "lucide-react";
 import { CALCULATORS } from "@/constants/calculators";
+import { CALCULATOR_COUNT_LABEL, TOTAL_CALCULATORS } from "@/constants/stats";
 import { IMPLEMENTED_SLUGS } from "@/lib/calculators/registry";
 
 const SARCASTIC_MESSAGES = [
@@ -16,7 +17,7 @@ const SARCASTIC_MESSAGES = [
   "Plot twist: the page rounded itself down to zero.",
   "If x = this page and x = 404, solve for therapy.",
   "Maybe it eloped with the Currency Converter. Last seen in EUR.",
-  "Statistics say 1 in 65 pages goes missing. You found it. Congrats?",
+  `Statistics say 1 in ${TOTAL_CALCULATORS} pages goes missing. You found it. Congrats?`,
   "We integrated. We differentiated. Still no page.",
   "The BMI Calculator says this page is underweight on existence.",
   "Pythagoras called — even he can't square this one.",
@@ -131,8 +132,8 @@ export default function NotFound() {
         </h1>
 
         <p className="text-text-secondary mt-4 max-w-xl text-balance">
-          We ran 65+ calculators on its whereabouts. None of them helped. Honestly, they were
-          judgmental.
+          We ran {CALCULATOR_COUNT_LABEL} calculators on its whereabouts. None of them helped.
+          Honestly, they were judgmental.
         </p>
 
         <div

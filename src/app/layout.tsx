@@ -10,7 +10,11 @@ import { Analytics } from "@/components/analytics/Analytics";
 import { WebVitals } from "@/components/analytics/WebVitals";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/seo/JsonLd";
 import { SITE } from "@/lib/site";
+import { CALCULATOR_COUNT_LABEL } from "@/constants/stats";
 import "./globals.css";
+
+const HEADLINE = `${SITE.name} — ${CALCULATOR_COUNT_LABEL} calculators in one place`;
+const META_DESCRIPTION = `${CALCULATOR_COUNT_LABEL} ${SITE.description}`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +31,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} — 65+ calculators in one place`,
+    default: HEADLINE,
     template: `%s · ${SITE.name}`,
   },
-  description: SITE.description,
+  description: META_DESCRIPTION,
   applicationName: SITE.name,
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -66,8 +70,8 @@ export const metadata: Metadata = {
     locale: "en_IN",
     alternateLocale: ["hi_IN"],
     url: SITE.url,
-    title: `${SITE.name} — 65+ calculators in one place`,
-    description: SITE.description,
+    title: HEADLINE,
+    description: META_DESCRIPTION,
     images: [
       {
         url: "/opengraph-image",
@@ -79,8 +83,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — 65+ calculators in one place`,
-    description: SITE.description,
+    title: HEADLINE,
+    description: META_DESCRIPTION,
     site: SITE.twitterHandle,
     creator: SITE.twitterHandle,
     images: ["/opengraph-image"],
