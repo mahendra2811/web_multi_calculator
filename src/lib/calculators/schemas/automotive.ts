@@ -265,4 +265,36 @@ export const AUTOMOTIVE_SCHEMAS: CalculatorSchema[] = [
       return { petrolCost: petrol, evCost: ev, savings: petrol - ev };
     },
   },
+  // ── batch 4 — travel ──────────────────────────────────────────────────────
+  {
+    slug: "vehicle-range",
+    inputs: [
+      { id: "tankL", label: "Tank capacity", kind: "number", default: 40, suffix: "L" },
+      { id: "mileageKmpl", label: "Mileage", kind: "number", default: 15, suffix: "km/L" },
+      { id: "reservePct", label: "Reserve buffer", kind: "percent", default: 10, suffix: "%" },
+    ],
+    outputs: [
+      {
+        id: "rangeKm",
+        label: "Full-tank range",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " km",
+        fractionDigits: 0,
+      },
+      {
+        id: "safeRangeKm",
+        label: "Safe range (after reserve)",
+        format: "number",
+        suffix: " km",
+        fractionDigits: 0,
+      },
+    ],
+    compute: (i) => {
+      const range = numF(i.tankL) * numF(i.mileageKmpl);
+      return { rangeKm: range, safeRangeKm: range * (1 - numF(i.reservePct) / 100) };
+    },
+    formula: "range = capacity × mileage ; safe = range × (1 − reserve%)",
+  },
 ];

@@ -280,6 +280,23 @@ export const CALCULATORS: CalculatorMeta[] = [
     "Calculator",
   ),
   C("tenure-solver", "Tenure Solver", "Back-solve tenure", "finance", "Calculator"),
+  // batch 4 — business / SaaS
+  C(
+    "cac-payback-period",
+    "CAC Payback Period",
+    "Months to recoup acquisition cost",
+    "finance",
+    "Clock",
+  ),
+  C("saas-quick-ratio", "SaaS Quick Ratio", "New + expansion vs churn MRR", "finance", "Gauge"),
+  C("rule-of-40", "Rule of 40", "Growth % + margin % must clear 40", "finance", "Activity"),
+  C(
+    "saas-magic-number",
+    "SaaS Magic Number",
+    "New ARR vs sales & marketing spend",
+    "finance",
+    "TrendingUp",
+  ),
 
   // ── Finance (India) — 24 new ───────────────────────────────────────────
   C("nsc", "NSC", "National Savings Certificate", "finance-india", "Landmark"),
@@ -416,6 +433,22 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("bac", "Blood Alcohol", "Widmark BAC", "health", "Wine"),
   C("gfr", "GFR (kidney)", "Estimated GFR + CKD stage", "health", "Activity"),
   C("steps-to-calories", "Steps to Calories", "Pedometer kcal", "health", "Footprints"),
+  // batch 4 — health
+  C(
+    "macronutrient-detailed",
+    "Macros (detailed)",
+    "P/C/F grams with goal adjustments",
+    "health",
+    "Apple",
+  ),
+  C(
+    "cholesterol-ratio",
+    "Cholesterol Ratio",
+    "TC/HDL cardiovascular risk band",
+    "health",
+    "HeartPulse",
+  ),
+  C("iron-intake", "Iron Intake (daily mg)", "RDA by age, sex, life stage", "health", "Apple"),
 
   // ── Date & Time (5 existing + 9 new = 14) ──────────────────────────────
   C("age", "Age Calculator", "Years, months, days", "datetime", "Cake"),
@@ -432,6 +465,29 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("stopwatch", "Stopwatch", "Elapsed time formatter", "datetime", "Timer"),
   C("pomodoro", "Pomodoro Timer", "Session + breaks total", "datetime", "Clock"),
   C("gestational-age", "Gestational Age", "Weeks pregnant", "datetime", "Baby"),
+  // batch 4 — date & time
+  C("day-of-year", "Day of Year", "Day number + days remaining", "datetime", "Calendar"),
+  C(
+    "iso-week-number",
+    "ISO Week Number",
+    "ISO 8601 year + week for a date",
+    "datetime",
+    "Calendar",
+  ),
+  C(
+    "add-business-days",
+    "Add Business Days",
+    "Skip weekends + holidays",
+    "datetime",
+    "CalendarPlus",
+  ),
+  C(
+    "time-until-birthday",
+    "Time Until Birthday",
+    "Countdown + age you'll turn",
+    "datetime",
+    "Cake",
+  ),
 
   // ── Crypto & Stock (6 existing + 14 new = 20) ──────────────────────────
   C("crypto-profit", "Crypto Profit", "Entry → exit profit/loss", "crypto", "Coins", {
@@ -529,6 +585,52 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("gravel", "Gravel", "Volume + weight", "construction", "Mountain"),
   C("fence", "Fence", "Posts + panels", "construction", "Fence"),
   C("pool-volume", "Pool Volume / Fill", "Volume + litres", "construction", "Droplet"),
+  // batch 4 — engineering (structural)
+  C(
+    "safety-factor",
+    "Safety Factor (FoS)",
+    "Ultimate strength vs working stress",
+    "construction",
+    "Shield",
+  ),
+  C(
+    "column-load",
+    "Column Load (Allowable)",
+    "Allowable axial load on a column",
+    "construction",
+    "Columns3",
+  ),
+  C(
+    "foundation-design",
+    "Foundation (Spread Footing)",
+    "Footing size from load + SBC",
+    "construction",
+    "Home",
+  ),
+  C(
+    "moment-of-inertia-shape",
+    "Moment of Inertia (shapes)",
+    "I for rect / circle / triangle",
+    "construction",
+    "Square",
+  ),
+  C("section-modulus", "Section Modulus", "S = I/c for bending design", "construction", "Square"),
+  C("truss-load", "Truss Member Force", "Two-member joint equilibrium", "construction", "Triangle"),
+  C(
+    "load-combination",
+    "Load Combination",
+    "Worst-case factored load per code",
+    "construction",
+    "Activity",
+  ),
+  C("dead-live-load", "Dead + Live Load", "Slab DL + LL per m²", "construction", "LayoutGrid"),
+  C(
+    "asphalt-quantity",
+    "Asphalt Quantity",
+    "Tonnage + cost for paved area",
+    "construction",
+    "Mountain",
+  ),
 
   // ── Automotive — 12 new ────────────────────────────────────────────────
   C("fuel-cost", "Fuel Cost", "Trip cost from km + price", "automotive", "Fuel"),
@@ -555,6 +657,14 @@ export const CALCULATORS: CalculatorMeta[] = [
     "BatteryCharging",
   ),
   C("ev-vs-petrol", "EV vs Petrol", "Annual cost comparison", "automotive", "GitCompare"),
+  // batch 4 — travel
+  C(
+    "vehicle-range",
+    "Vehicle Range (Full Tank)",
+    "How far you can drive on a tank",
+    "automotive",
+    "Car",
+  ),
 
   // ── Physics — 25 new ───────────────────────────────────────────────────
   C("force", "Force (F = ma)", "Newton's 2nd law", "physics", "Atom"),
@@ -582,6 +692,56 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("doppler", "Doppler Effect", "Frequency shift", "physics", "Radio"),
   C("pendulum", "Pendulum Period", "2π·√(L/g)", "physics", "Activity"),
   C("hooke-spring", "Hooke's Law (spring)", "F = k·x", "physics", "Activity"),
+  // batch 4 — engineering (mechanical / fluid / thermal)
+  C(
+    "torque-force",
+    "Torque (F·r·sin θ)",
+    "Torque from force, lever arm, angle",
+    "physics",
+    "Wrench",
+  ),
+  C(
+    "pipe-friction-loss",
+    "Pipe Friction (Darcy)",
+    "Friction head loss + pressure drop",
+    "physics",
+    "Activity",
+  ),
+  C(
+    "heat-exchanger-efficiency",
+    "Heat Exchanger (LMTD)",
+    "Log mean temp diff + effectiveness",
+    "physics",
+    "Thermometer",
+  ),
+  // batch 4 — physics
+  C("refractive-index", "Refractive Index", "n = c/v or from angles", "physics", "Star"),
+  C(
+    "lens-equation",
+    "Lens Equation (thin lens)",
+    "Image distance + magnification",
+    "physics",
+    "Eye",
+  ),
+  C("snells-law", "Snell's Law", "Refraction angle at an interface", "physics", "Waves"),
+  C(
+    "sound-intensity-db",
+    "Sound Intensity (dB)",
+    "Decibels from W/m² intensity",
+    "physics",
+    "Volume2",
+  ),
+  C("latent-heat", "Latent Heat", "Q = m·L phase-change energy", "physics", "Flame"),
+  C("coulombs-law", "Coulomb's Law", "Force between two charges", "physics", "Zap"),
+  C(
+    "magnetic-field-wire",
+    "Magnetic Field (wire)",
+    "B around a straight wire",
+    "physics",
+    "Magnet",
+  ),
+  C("lorentz-force", "Lorentz Force", "Force on a moving charge", "physics", "Zap"),
+  C("centripetal-force-shm", "Centripetal Force", "F = mv²/r and a = v²/r", "physics", "Circle"),
 
   // ── Chemistry — 15 new ─────────────────────────────────────────────────
   C("molarity", "Molarity", "mol/L", "chemistry", "FlaskRound"),
@@ -606,6 +766,39 @@ export const CALCULATORS: CalculatorMeta[] = [
     "FlaskRound",
   ),
 
+  // batch 4 — chemistry
+  C(
+    "reaction-yield-percent",
+    "Reaction Yield (%)",
+    "Actual / theoretical yield × 100",
+    "chemistry",
+    "Beaker",
+  ),
+  C(
+    "equilibrium-constant",
+    "Equilibrium Constant (Kc)",
+    "Kc from equilibrium concentrations",
+    "chemistry",
+    "Beaker",
+  ),
+  C("reaction-rate", "Reaction Rate (rate law)", "Rate = k · Π[A]^order", "chemistry", "Activity"),
+  C(
+    "enthalpy-change-hess",
+    "Enthalpy (Hess's Law)",
+    "ΔH overall from reaction steps",
+    "chemistry",
+    "Flame",
+  ),
+  C("entropy-change", "Entropy Change (ΔS°)", "Σ products − Σ reactants", "chemistry", "Activity"),
+  C(
+    "gibbs-free-energy",
+    "Gibbs Free Energy (ΔG)",
+    "Spontaneity via ΔG = ΔH − TΔS",
+    "chemistry",
+    "Activity",
+  ),
+  C("buffer-capacity", "Buffer Capacity (β)", "Resistance to pH change", "chemistry", "FlaskRound"),
+
   // ── Electrical — 12 new ────────────────────────────────────────────────
   C("ohms-full", "Ohm's Law (full)", "Solve for V, I, R or P", "electrical", "Zap"),
   C("resistor-color-code", "Resistor Color Code", "4-band → resistance", "electrical", "Palette"),
@@ -619,6 +812,14 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("power-factor", "Power Factor", "Real / apparent", "electrical", "Zap"),
   C("battery-life", "Battery Life", "mAh ÷ mA", "electrical", "Battery"),
   C("solar-panel-sizing", "Solar Panel Sizing", "Daily load × sun-hours", "electrical", "Sun"),
+  // batch 4 — engineering (electrical)
+  C(
+    "current-divider",
+    "Current Divider",
+    "Current through parallel branches",
+    "electrical",
+    "GitMerge",
+  ),
 
   // ── Cooking — 10 new ───────────────────────────────────────────────────
   C("recipe-scaler", "Recipe Scaler", "Servings new/old", "cooking", "ChefHat"),
@@ -654,6 +855,52 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("retirement-countdown", "Retirement Countdown", "Years until retire", "lifestyle", "Timer"),
   C("carbon-footprint", "Carbon Footprint", "Tonnes CO₂/yr", "lifestyle", "Leaf"),
   C("water-footprint", "Water Footprint", "L/day", "lifestyle", "Droplet"),
+  // batch 4 — travel
+  C("walking-time", "Walking Time", "Time to walk a distance at a pace", "lifestyle", "Footprints"),
+  C(
+    "train-journey-duration",
+    "Train Journey Duration",
+    "Journey time including stops",
+    "lifestyle",
+    "TrainFront",
+  ),
+  C("bike-ride-time", "Bike Ride Time", "Cycle time at chosen pace", "lifestyle", "Bike"),
+  C(
+    "travel-delay-prob",
+    "Travel Delay (expected)",
+    "Expected delay + P(major delay)",
+    "lifestyle",
+    "Clock",
+  ),
+  C(
+    "layover-min",
+    "Layover Time Required",
+    "Min connection buffer by airport",
+    "lifestyle",
+    "Plane",
+  ),
+  // batch 4 — education
+  C(
+    "cgpa-percentage-custom",
+    "CGPA → % (custom scale)",
+    "Institution-specific conversion",
+    "lifestyle",
+    "GraduationCap",
+  ),
+  C(
+    "cumulative-marks-predictor",
+    "Cumulative Marks Predictor",
+    "Final marks from done + estimated",
+    "lifestyle",
+    "GraduationCap",
+  ),
+  C(
+    "course-credit-hours",
+    "Course Credit Hours",
+    "Sum credits + eligibility flag",
+    "lifestyle",
+    "GraduationCap",
+  ),
 
   // ── Developer — 14 new ─────────────────────────────────────────────────
   C("ip-subnet", "IP Subnet (CIDR)", "Mask, hosts, broadcast", "developer", "Globe"),
@@ -670,6 +917,30 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("bandwidth", "Bandwidth / Download Time", "File size ÷ speed", "developer", "Download"),
   C("color-converter", "Color Converter", "HEX ↔ RGB ↔ HSL", "developer", "Palette"),
   C("cron-helper", "Cron Expression Helper", "Minutes/hours fields", "developer", "Clock"),
+  // batch 4 — developer tools
+  C(
+    "color-contrast-wcag",
+    "Color Contrast (WCAG)",
+    "Contrast ratio + AA/AAA pass",
+    "developer",
+    "Palette",
+  ),
+  C("json-size", "JSON Size Estimator", "Raw / minified / gzip bytes", "developer", "Code"),
+  C(
+    "markdown-word-count",
+    "Markdown Word Count",
+    "Words, chars, reading time",
+    "developer",
+    "Type",
+  ),
+  C(
+    "image-aspect-resize",
+    "Image Aspect Resize",
+    "Resize preserving aspect ratio",
+    "developer",
+    "Image",
+  ),
+  C("cron-next-run", "Cron Next Run", "Next 5 firings of a cron expression", "developer", "Clock"),
 
   // ── Weather — 7 new ────────────────────────────────────────────────────
   C("wind-chill", "Wind Chill", "Apparent temp from wind", "weather", "Wind"),
@@ -689,6 +960,24 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("bowling-score", "Bowling (10-pin) Score", "Frame total", "sports", "Target"),
   C("darts-checkout", "Darts Checkout", "From remaining score", "sports", "Target"),
   C("fantasy-cricket", "Fantasy Cricket Points", "Runs + wickets + catches", "sports", "Trophy"),
+  // batch 4 — sports
+  C(
+    "max-heart-rate-tanaka",
+    "Max Heart Rate (Tanaka)",
+    "208 − 0.7·age + training zones",
+    "sports",
+    "Heart",
+  ),
+  C(
+    "vo2max-bruce",
+    "VO₂max (Bruce Protocol)",
+    "From treadmill time to exhaustion",
+    "sports",
+    "Activity",
+  ),
+  C("dots-score", "DOTS Score", "Powerlifting strength comparison", "sports", "Dumbbell"),
+  C("race-time-vdot", "Race Time VDOT", "Equivalent race times (Daniels)", "sports", "Timer"),
+  C("football-xg", "Football xG", "Expected goals per shot", "sports", "Target"),
 ];
 
 const categoryIndex = new Map<Category, CalculatorMeta[]>();

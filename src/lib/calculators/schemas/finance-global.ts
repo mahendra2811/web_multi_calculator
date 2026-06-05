@@ -1150,4 +1150,180 @@ export const FINANCE_GLOBAL_SCHEMAS: CalculatorSchema[] = [
       return { years: months / 12, months };
     },
   },
+  // ── batch 4 — business / SaaS ─────────────────────────────────────────────
+  {
+    slug: "cac-payback-period",
+    inputs: [
+      {
+        id: "cac",
+        label: "Customer acquisition cost (CAC)",
+        kind: "currency",
+        default: 5000,
+        prefix: "₹",
+      },
+      {
+        id: "arpu",
+        label: "Monthly revenue per customer (ARPU)",
+        kind: "currency",
+        default: 500,
+        prefix: "₹",
+      },
+      { id: "grossMarginPct", label: "Gross margin", kind: "percent", default: 70, suffix: "%" },
+    ],
+    outputs: [
+      {
+        id: "paybackMonths",
+        label: "Payback period",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " months",
+        fractionDigits: 1,
+      },
+      { id: "healthFlag", label: "Health", format: "text" },
+    ],
+    compute: (i) => {
+      const monthly = numF(i.arpu) * (numF(i.grossMarginPct) / 100);
+      if (monthly <= 0) return {};
+      const months = numF(i.cac) / monthly;
+      return {
+        paybackMonths: months,
+        healthFlag:
+          months < 12
+            ? "Healthy (< 12 months)"
+            : months <= 18
+              ? "Acceptable (12–18 months)"
+              : "Concerning (> 18 months)",
+      };
+    },
+    formula: "Payback = CAC ÷ (ARPU × gross margin %)",
+  },
+  {
+    slug: "saas-quick-ratio",
+    inputs: [
+      { id: "newMrr", label: "New MRR", kind: "currency", default: 50000, prefix: "₹" },
+      { id: "expansionMrr", label: "Expansion MRR", kind: "currency", default: 20000, prefix: "₹" },
+      { id: "churnedMrr", label: "Churned MRR", kind: "currency", default: 10000, prefix: "₹" },
+      {
+        id: "contractionMrr",
+        label: "Contraction MRR",
+        kind: "currency",
+        default: 5000,
+        prefix: "₹",
+      },
+    ],
+    outputs: [
+      {
+        id: "quickRatio",
+        label: "SaaS quick ratio",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+      },
+      { id: "netNewMrr", label: "Net new MRR", format: "currency-inr" },
+      { id: "verdict", label: "Verdict", format: "text" },
+    ],
+    compute: (i) => {
+      const gained = numF(i.newMrr) + numF(i.expansionMrr);
+      const lost = numF(i.churnedMrr) + numF(i.contractionMrr);
+      if (lost <= 0) return { netNewMrr: gained, verdict: "No churn — ratio undefined (∞)" };
+      const qr = gained / lost;
+      return {
+        quickRatio: qr,
+        netNewMrr: gained - lost,
+        verdict:
+          qr >= 4
+            ? "Excellent (≥ 4)"
+            : qr >= 2
+              ? "Good (2–4)"
+              : qr >= 1
+                ? "Treading water (1–2)"
+                : "Shrinking (< 1)",
+      };
+    },
+    formula: "QR = (new + expansion MRR) ÷ (churned + contraction MRR)",
+  },
+  {
+    slug: "rule-of-40",
+    inputs: [
+      { id: "growthPct", label: "Revenue growth rate", kind: "percent", default: 25, suffix: "%" },
+      {
+        id: "marginPct",
+        label: "Profit margin (EBITDA/FCF)",
+        kind: "percent",
+        default: 20,
+        suffix: "%",
+      },
+    ],
+    outputs: [
+      {
+        id: "sum",
+        label: "Rule of 40 score",
+        format: "percent",
+        tone: "primary",
+        big: true,
+        fractionDigits: 1,
+      },
+      { id: "pass", label: "Result", format: "text" },
+    ],
+    compute: (i) => {
+      const sum = numF(i.growthPct) + numF(i.marginPct);
+      return {
+        sum,
+        pass:
+          sum >= 40
+            ? "Pass — healthy growth/profit balance"
+            : `Below the bar by ${(40 - sum).toFixed(1)} points`,
+      };
+    },
+    formula: "Rule of 40 = growth % + profit margin % — should be ≥ 40",
+  },
+  {
+    slug: "saas-magic-number",
+    inputs: [
+      {
+        id: "quarterNewArr",
+        label: "New ARR this quarter",
+        kind: "currency",
+        default: 2000000,
+        prefix: "₹",
+      },
+      {
+        id: "prevQuarterSmSpend",
+        label: "Sales & marketing spend (previous quarter)",
+        kind: "currency",
+        default: 1500000,
+        prefix: "₹",
+      },
+    ],
+    outputs: [
+      {
+        id: "magicNumber",
+        label: "Magic number",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+      },
+      { id: "verdict", label: "Verdict", format: "text" },
+    ],
+    compute: (i) => {
+      const spend = numF(i.prevQuarterSmSpend);
+      if (spend <= 0) return {};
+      const magic = numF(i.quarterNewArr) / spend;
+      return {
+        magicNumber: magic,
+        verdict:
+          magic >= 1.5
+            ? "Scale up — sales efficiency is excellent (≥ 1.5)"
+            : magic >= 1
+              ? "Healthy (1–1.5)"
+              : magic >= 0.75
+                ? "Workable, optimize funnel (0.75–1)"
+                : "Inefficient — fix GTM before spending more (< 0.75)",
+      };
+    },
+    formula: "Magic number = new ARR in quarter ÷ previous quarter's S&M spend",
+  },
 ];

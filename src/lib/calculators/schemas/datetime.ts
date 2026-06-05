@@ -174,4 +174,127 @@ export const DATETIME_SCHEMAS: CalculatorSchema[] = [
       return { weeks, trimester: `Trimester ${tri}`, due: due.toISOString() };
     },
   },
+  // ── batch 4 — date & time ─────────────────────────────────────────────────
+  {
+    slug: "day-of-year",
+    inputs: [{ id: "date", label: "Date", kind: "date" }],
+    outputs: [
+      { id: "dayNumber", label: "Day of year", format: "integer", tone: "primary", big: true },
+      { id: "daysRemaining", label: "Days remaining in year", format: "integer" },
+      { id: "leap", label: "Leap year?", format: "text" },
+    ],
+    compute: (i) => {
+      const d = new Date(String(i.date));
+      if (isNaN(d.getTime())) return {};
+      const y = d.getFullYear();
+      const start = new Date(y, 0, 1);
+      const dayNumber = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
+      const isLeap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+      const total = isLeap ? 366 : 365;
+      return {
+        dayNumber,
+        daysRemaining: total - dayNumber,
+        leap: isLeap ? "Yes (366 days)" : "No (365 days)",
+      };
+    },
+    formula: "Day number since Jan 1 (= 1); Dec 31 = 365 or 366 in a leap year",
+  },
+  {
+    slug: "iso-week-number",
+    inputs: [{ id: "date", label: "Date", kind: "date" }],
+    outputs: [
+      { id: "isoWeek", label: "ISO week number", format: "integer", tone: "primary", big: true },
+      { id: "isoYear", label: "ISO week-year", format: "integer" },
+      { id: "weekday", label: "Day of week", format: "text" },
+    ],
+    compute: (i) => {
+      const d = new Date(String(i.date));
+      if (isNaN(d.getTime())) return {};
+      // ISO 8601: week containing the first Thursday of the year is week 1
+      const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = t.getUTCDay() || 7;
+      t.setUTCDate(t.getUTCDate() + 4 - dayNum);
+      const isoYear = t.getUTCFullYear();
+      const yearStart = new Date(Date.UTC(isoYear, 0, 1));
+      const isoWeek = Math.ceil(((t.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+      return {
+        isoWeek,
+        isoYear,
+        weekday: d.toLocaleDateString("en-US", { weekday: "long" }),
+      };
+    },
+    formula: "ISO 8601 — weeks start Monday; week 1 contains January 4",
+  },
+  {
+    slug: "add-business-days",
+    inputs: [
+      { id: "startDate", label: "Start date", kind: "date" },
+      { id: "daysToAdd", label: "Business days to add", kind: "number", default: 10 },
+      {
+        id: "holidays",
+        label: "Holidays — one YYYY-MM-DD per line (optional)",
+        kind: "textarea",
+        default: "",
+      },
+    ],
+    outputs: [
+      { id: "resultDate", label: "Resulting date", format: "date", tone: "primary", big: true },
+      { id: "skipped", label: "Weekend/holiday days skipped", format: "integer" },
+    ],
+    compute: (i) => {
+      const start = new Date(String(i.startDate));
+      if (isNaN(start.getTime())) return {};
+      const holidays = new Set(
+        String(i.holidays)
+          .split(/\n+/)
+          .map((l) => l.trim())
+          .filter(Boolean),
+      );
+      const target = Math.min(10000, Math.max(0, Math.floor(numF(i.daysToAdd))));
+      const d = new Date(start);
+      let added = 0;
+      let skipped = 0;
+      while (added < target) {
+        d.setDate(d.getDate() + 1);
+        const dow = d.getDay();
+        const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        if (dow === 0 || dow === 6 || holidays.has(iso)) skipped++;
+        else added++;
+      }
+      return { resultDate: d.toISOString(), skipped };
+    },
+    formula: "Walk forward day by day, skipping Saturdays, Sundays and listed holidays",
+  },
+  {
+    slug: "time-until-birthday",
+    inputs: [{ id: "dob", label: "Date of birth", kind: "date" }],
+    outputs: [
+      {
+        id: "countdown",
+        label: "Time until next birthday",
+        format: "text",
+        tone: "primary",
+        big: true,
+      },
+      { id: "turningAge", label: "You'll turn", format: "integer" },
+      { id: "nextDate", label: "Next birthday", format: "date" },
+    ],
+    compute: (i) => {
+      const dob = new Date(String(i.dob));
+      if (isNaN(dob.getTime())) return {};
+      const now = new Date();
+      const next = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
+      if (next.getTime() <= now.getTime()) next.setFullYear(next.getFullYear() + 1);
+      const ms = next.getTime() - now.getTime();
+      const days = Math.floor(ms / 86400000);
+      const hours = Math.floor((ms % 86400000) / 3600000);
+      const mins = Math.floor((ms % 3600000) / 60000);
+      return {
+        countdown: `${days}d ${hours}h ${mins}m`,
+        turningAge: next.getFullYear() - dob.getFullYear(),
+        nextDate: next.toISOString(),
+      };
+    },
+    formula: "Difference between now and the next occurrence of your birth date",
+  },
 ];

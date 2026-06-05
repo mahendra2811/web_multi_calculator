@@ -321,4 +321,33 @@ export const ELECTRICAL_SCHEMAS: CalculatorSchema[] = [
       return { watts, panels300: Math.ceil(watts / 300) };
     },
   },
+  // ── batch 4 — engineering (electrical) ───────────────────────────────────
+  {
+    slug: "current-divider",
+    inputs: [
+      { id: "iTotalA", label: "Total current", kind: "number", default: 10, suffix: "A" },
+      { id: "r1", label: "Resistor R1", kind: "number", default: 100, suffix: "Ω" },
+      { id: "r2", label: "Resistor R2", kind: "number", default: 200, suffix: "Ω" },
+    ],
+    outputs: [
+      {
+        id: "i1",
+        label: "Current through R1",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " A",
+        fractionDigits: 3,
+      },
+      { id: "i2", label: "Current through R2", format: "number", suffix: " A", fractionDigits: 3 },
+    ],
+    compute: (i) => {
+      const it = numF(i.iTotalA);
+      const r1 = numF(i.r1);
+      const r2 = numF(i.r2);
+      if (r1 + r2 <= 0) return {};
+      return { i1: (it * r2) / (r1 + r2), i2: (it * r1) / (r1 + r2) };
+    },
+    formula: "I1 = I·R2/(R1+R2) ; I2 = I·R1/(R1+R2)",
+  },
 ];

@@ -689,4 +689,156 @@ export const HEALTH_SCHEMAS: CalculatorSchema[] = [
     ],
     compute: (i) => ({ cal: numF(i.steps) * 0.0005 * numF(i.weight) }),
   },
+  // ── batch 4 — health ──────────────────────────────────────────────────────
+  {
+    slug: "macronutrient-detailed",
+    inputs: [
+      {
+        id: "tdee",
+        label: "TDEE (maintenance calories)",
+        kind: "number",
+        default: 2400,
+        suffix: "kcal",
+      },
+      {
+        id: "goal",
+        label: "Goal",
+        kind: "select",
+        default: "maintain",
+        options: [
+          { value: "cut", label: "Cut (−20%)" },
+          { value: "maintain", label: "Maintain" },
+          { value: "bulk", label: "Bulk (+10%)" },
+        ],
+      },
+      { id: "bodyWeightKg", label: "Body weight", kind: "number", default: 70, suffix: "kg" },
+      {
+        id: "proteinGperKg",
+        label: "Protein target",
+        kind: "number",
+        default: 1.8,
+        suffix: "g/kg",
+      },
+      { id: "fatPct", label: "Calories from fat", kind: "percent", default: 25, suffix: "%" },
+    ],
+    outputs: [
+      {
+        id: "proteinG",
+        label: "Protein",
+        format: "integer",
+        tone: "primary",
+        big: true,
+        suffix: " g",
+      },
+      { id: "carbG", label: "Carbs", format: "integer", suffix: " g" },
+      { id: "fatG", label: "Fat", format: "integer", suffix: " g" },
+      { id: "calories", label: "Daily calories", format: "integer", suffix: " kcal" },
+    ],
+    compute: (i) => {
+      const mult = { cut: 0.8, maintain: 1, bulk: 1.1 }[String(i.goal)] ?? 1;
+      const cal = numF(i.tdee) * mult;
+      const proteinG = numF(i.bodyWeightKg) * numF(i.proteinGperKg);
+      const fatG = (cal * (numF(i.fatPct) / 100)) / 9;
+      const carbG = Math.max(0, (cal - proteinG * 4 - fatG * 9) / 4);
+      return { proteinG, carbG, fatG, calories: cal };
+    },
+    formula: "P = weight × g/kg · F = kcal × fat% ÷ 9 · C = (kcal − 4P − 9F) ÷ 4",
+  },
+  {
+    slug: "cholesterol-ratio",
+    inputs: [
+      {
+        id: "totalCholesterol",
+        label: "Total cholesterol",
+        kind: "number",
+        default: 200,
+        suffix: "mg/dL",
+      },
+      { id: "hdl", label: "HDL (good) cholesterol", kind: "number", default: 50, suffix: "mg/dL" },
+    ],
+    outputs: [
+      {
+        id: "ratio",
+        label: "TC/HDL ratio",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+      },
+      { id: "riskBand", label: "Risk band", format: "text" },
+    ],
+    compute: (i) => {
+      const hdl = numF(i.hdl);
+      if (hdl <= 0) return {};
+      const ratio = numF(i.totalCholesterol) / hdl;
+      return {
+        ratio,
+        riskBand:
+          ratio < 3.5 ? "Ideal (< 3.5)" : ratio <= 5 ? "Borderline (3.5–5)" : "High risk (> 5)",
+      };
+    },
+    formula: "ratio = TC ÷ HDL — ideal < 3.5, borderline 3.5–5, high > 5",
+  },
+  {
+    slug: "iron-intake",
+    inputs: [
+      { id: "age", label: "Age", kind: "number", default: 30, suffix: "yrs" },
+      {
+        id: "sex",
+        label: "Sex",
+        kind: "select",
+        default: "female",
+        options: [
+          { value: "male", label: "Male" },
+          { value: "female", label: "Female" },
+        ],
+      },
+      { id: "pregnant", label: "Pregnant", kind: "toggle", default: false },
+      { id: "lactating", label: "Lactating", kind: "toggle", default: false },
+    ],
+    outputs: [
+      {
+        id: "dailyMg",
+        label: "Daily iron RDA",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " mg",
+        fractionDigits: 0,
+      },
+      { id: "note", label: "Life stage", format: "text" },
+    ],
+    compute: (i) => {
+      const age = numF(i.age);
+      const female = String(i.sex) === "female";
+      if (i.pregnant && female) return { dailyMg: 27, note: "Pregnancy — highest requirement" };
+      if (i.lactating && female) return { dailyMg: 9, note: "Lactation (19+ yrs)" };
+      let mg: number;
+      let note: string;
+      if (age < 1) {
+        mg = 11;
+        note = "Infant 7–12 months";
+      } else if (age <= 3) {
+        mg = 7;
+        note = "Toddler 1–3 yrs";
+      } else if (age <= 8) {
+        mg = 10;
+        note = "Child 4–8 yrs";
+      } else if (age <= 13) {
+        mg = 8;
+        note = "Child 9–13 yrs";
+      } else if (age <= 18) {
+        mg = female ? 15 : 11;
+        note = "Teen 14–18 yrs";
+      } else if (age <= 50) {
+        mg = female ? 18 : 8;
+        note = female ? "Woman 19–50 yrs (menstruating)" : "Man 19–50 yrs";
+      } else {
+        mg = 8;
+        note = "Adult 51+ yrs";
+      }
+      return { dailyMg: mg, note };
+    },
+    formula: "NIH RDA table: men 19+ 8 mg · women 19–50 18 mg · pregnancy 27 mg · lactation 9 mg",
+  },
 ];

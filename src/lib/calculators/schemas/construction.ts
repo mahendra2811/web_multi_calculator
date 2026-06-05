@@ -457,4 +457,371 @@ export const CONSTRUCTION_SCHEMAS: CalculatorSchema[] = [
       return { volume: v, litres: v * 1000 };
     },
   },
+  // ── batch 4 — engineering (structural) ───────────────────────────────────
+  {
+    slug: "safety-factor",
+    inputs: [
+      { id: "strength", label: "Ultimate strength", kind: "number", default: 400, suffix: "MPa" },
+      { id: "workingStress", label: "Working stress", kind: "number", default: 120, suffix: "MPa" },
+    ],
+    outputs: [
+      {
+        id: "fos",
+        label: "Factor of safety",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+      },
+      { id: "verdict", label: "Verdict", format: "text" },
+    ],
+    compute: (i) => {
+      const s = numF(i.strength);
+      const w = numF(i.workingStress);
+      if (w <= 0) return {};
+      const fos = s / w;
+      return {
+        fos,
+        verdict:
+          fos >= 2
+            ? "Safe (FoS ≥ 2)"
+            : fos >= 1.5
+              ? "Marginal (1.5 ≤ FoS < 2)"
+              : "Unsafe (FoS < 1.5)",
+      };
+    },
+    formula: "FoS = ultimate strength ÷ working stress",
+  },
+  {
+    slug: "column-load",
+    inputs: [
+      { id: "area", label: "Cross-section area", kind: "number", default: 0.16, suffix: "m²" },
+      {
+        id: "allowableStress",
+        label: "Allowable stress",
+        kind: "number",
+        default: 15000,
+        suffix: "kN/m²",
+      },
+    ],
+    outputs: [
+      {
+        id: "pAllow",
+        label: "Allowable axial load",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kN",
+        fractionDigits: 1,
+      },
+    ],
+    compute: (i) => ({ pAllow: numF(i.allowableStress) * numF(i.area) }),
+    formula: "P_allow = σ_allow × A",
+  },
+  {
+    slug: "foundation-design",
+    inputs: [
+      { id: "load", label: "Column load", kind: "number", default: 800, suffix: "kN" },
+      { id: "sbc", label: "Safe bearing capacity", kind: "number", default: 200, suffix: "kN/m²" },
+      { id: "fos", label: "Factor of safety", kind: "number", default: 2 },
+    ],
+    outputs: [
+      {
+        id: "area",
+        label: "Required footing area",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " m²",
+        fractionDigits: 2,
+      },
+      {
+        id: "sideM",
+        label: "Square footing side",
+        format: "number",
+        suffix: " m",
+        fractionDigits: 2,
+      },
+    ],
+    compute: (i) => {
+      const sbc = numF(i.sbc);
+      if (sbc <= 0) return {};
+      const area = (numF(i.load) * numF(i.fos)) / sbc;
+      return { area, sideM: Math.sqrt(area) };
+    },
+    formula: "A_req = (Load × FoS) ÷ SBC; side = √A",
+  },
+  {
+    slug: "moment-of-inertia-shape",
+    inputs: [
+      {
+        id: "shape",
+        label: "Shape",
+        kind: "select",
+        default: "rect",
+        options: [
+          { value: "rect", label: "Rectangle (b × h)" },
+          { value: "circle", label: "Circle (diameter d)" },
+          { value: "triangle", label: "Triangle (b × h)" },
+        ],
+      },
+      { id: "b", label: "Width b", kind: "number", default: 0.1, suffix: "m" },
+      { id: "h", label: "Height h", kind: "number", default: 0.2, suffix: "m" },
+      { id: "d", label: "Diameter d (circle)", kind: "number", default: 0.1, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "momentI",
+        label: "Moment of inertia I",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " m⁴",
+        fractionDigits: 8,
+      },
+      {
+        id: "centroidY",
+        label: "Centroid height ȳ",
+        format: "number",
+        suffix: " m",
+        fractionDigits: 4,
+      },
+    ],
+    compute: (i) => {
+      const b = numF(i.b);
+      const h = numF(i.h);
+      const d = numF(i.d);
+      switch (String(i.shape)) {
+        case "circle":
+          return { momentI: (Math.PI * Math.pow(d, 4)) / 64, centroidY: d / 2 };
+        case "triangle":
+          return { momentI: (b * Math.pow(h, 3)) / 36, centroidY: h / 3 };
+        default:
+          return { momentI: (b * Math.pow(h, 3)) / 12, centroidY: h / 2 };
+      }
+    },
+    formula: "Rect I = bh³/12 · Circle I = πd⁴/64 · Triangle I = bh³/36",
+  },
+  {
+    slug: "section-modulus",
+    inputs: [
+      {
+        id: "momentI",
+        label: "Moment of inertia I",
+        kind: "number",
+        default: 0.000001,
+        suffix: "m⁴",
+      },
+      { id: "c", label: "Distance to extreme fibre c", kind: "number", default: 0.05, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "secMod",
+        label: "Section modulus S",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " m³",
+        fractionDigits: 8,
+      },
+    ],
+    compute: (i) => {
+      const c = numF(i.c);
+      if (c <= 0) return {};
+      return { secMod: numF(i.momentI) / c };
+    },
+    formula: "S = I ÷ c",
+  },
+  {
+    slug: "truss-load",
+    inputs: [
+      { id: "loadKn", label: "Vertical load at joint", kind: "number", default: 10, suffix: "kN" },
+      {
+        id: "angle1Deg",
+        label: "Member 1 angle from horizontal",
+        kind: "number",
+        default: 45,
+        suffix: "°",
+      },
+      {
+        id: "angle2Deg",
+        label: "Member 2 angle from horizontal",
+        kind: "number",
+        default: 135,
+        suffix: "°",
+      },
+    ],
+    outputs: [
+      {
+        id: "f1",
+        label: "Member 1 force",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kN",
+        fractionDigits: 2,
+      },
+      { id: "f2", label: "Member 2 force", format: "number", suffix: " kN", fractionDigits: 2 },
+      { id: "note", label: "Sign convention", format: "text" },
+    ],
+    compute: (i) => {
+      // Method of joints at a single pin: two members at angles θ1, θ2 carry a downward load P.
+      // ΣFx = 0: F1·cosθ1 + F2·cosθ2 = 0 ; ΣFy = 0: F1·sinθ1 + F2·sinθ2 = P
+      const p = numF(i.loadKn);
+      const a1 = (numF(i.angle1Deg) * Math.PI) / 180;
+      const a2 = (numF(i.angle2Deg) * Math.PI) / 180;
+      const det = Math.cos(a1) * Math.sin(a2) - Math.cos(a2) * Math.sin(a1);
+      if (Math.abs(det) < 1e-9) return { note: "Members are collinear — joint cannot be solved" };
+      const f2 = (p * Math.cos(a1)) / det;
+      const cos1 = Math.cos(a1);
+      const f1 =
+        Math.abs(cos1) < 1e-9
+          ? p / Math.sin(a1) - (f2 * Math.sin(a2)) / Math.sin(a1)
+          : (-f2 * Math.cos(a2)) / cos1;
+      return { f1, f2, note: "Positive = tension, negative = compression" };
+    },
+    formula: "Joint equilibrium: ΣFx = 0, ΣFy = 0 (positive = tension)",
+  },
+  {
+    slug: "load-combination",
+    inputs: [
+      { id: "dl", label: "Dead load (DL)", kind: "number", default: 10, suffix: "kN/m²" },
+      { id: "ll", label: "Live load (LL)", kind: "number", default: 5, suffix: "kN/m²" },
+      { id: "wl", label: "Wind load (WL)", kind: "number", default: 3, suffix: "kN/m²" },
+      {
+        id: "code",
+        label: "Design code",
+        kind: "select",
+        default: "IS875",
+        options: [
+          { value: "IS875", label: "IS 456 / IS 875 (India)" },
+          { value: "ASCE", label: "ASCE 7 (US)" },
+        ],
+      },
+    ],
+    outputs: [
+      {
+        id: "worstCase",
+        label: "Governing factored load",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kN/m²",
+        fractionDigits: 2,
+      },
+      { id: "combinations", label: "All combinations", format: "text" },
+    ],
+    compute: (i) => {
+      const dl = numF(i.dl);
+      const ll = numF(i.ll);
+      const wl = numF(i.wl);
+      const combos: Array<[string, number]> =
+        String(i.code) === "ASCE"
+          ? [
+              ["1.4DL", 1.4 * dl],
+              ["1.2DL + 1.6LL", 1.2 * dl + 1.6 * ll],
+              ["1.2DL + 1.0LL + 1.0WL", 1.2 * dl + 1.0 * ll + 1.0 * wl],
+              ["0.9DL + 1.0WL", 0.9 * dl + 1.0 * wl],
+            ]
+          : [
+              ["1.5(DL + LL)", 1.5 * (dl + ll)],
+              ["1.2(DL + LL + WL)", 1.2 * (dl + ll + wl)],
+              ["1.5(DL + WL)", 1.5 * (dl + wl)],
+              ["0.9DL + 1.5WL", 0.9 * dl + 1.5 * wl],
+            ];
+      const worst = combos.reduce((m, c) => Math.max(m, c[1]), 0);
+      return {
+        worstCase: worst,
+        combinations: combos.map(([n, v]) => `${n} = ${v.toFixed(2)}`).join(" · "),
+      };
+    },
+    formula: "Governing = max of code-factored DL/LL/WL combinations",
+  },
+  {
+    slug: "dead-live-load",
+    inputs: [
+      { id: "slabThicknessM", label: "Slab thickness", kind: "number", default: 0.15, suffix: "m" },
+      {
+        id: "concreteDensity",
+        label: "Concrete unit weight",
+        kind: "number",
+        default: 25,
+        suffix: "kN/m³",
+      },
+      {
+        id: "finishThicknessM",
+        label: "Floor finish thickness",
+        kind: "number",
+        default: 0.05,
+        suffix: "m",
+      },
+      {
+        id: "finishDensity",
+        label: "Finish unit weight",
+        kind: "number",
+        default: 20,
+        suffix: "kN/m³",
+      },
+      {
+        id: "liveKnM2",
+        label: "Live load (per code)",
+        kind: "number",
+        default: 4,
+        suffix: "kN/m²",
+      },
+    ],
+    outputs: [
+      {
+        id: "totalKnM2",
+        label: "Total load",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kN/m²",
+        fractionDigits: 2,
+      },
+      { id: "dl", label: "Dead load", format: "number", suffix: " kN/m²", fractionDigits: 2 },
+      { id: "ll", label: "Live load", format: "number", suffix: " kN/m²", fractionDigits: 2 },
+    ],
+    compute: (i) => {
+      const dl =
+        numF(i.slabThicknessM) * numF(i.concreteDensity) +
+        numF(i.finishThicknessM) * numF(i.finishDensity);
+      const ll = numF(i.liveKnM2);
+      return { totalKnM2: dl + ll, dl, ll };
+    },
+    formula: "DL = slab·ρc + finish·ρf ; total = DL + LL",
+  },
+  {
+    slug: "asphalt-quantity",
+    inputs: [
+      { id: "areaM2", label: "Paved area", kind: "number", default: 500, suffix: "m²" },
+      { id: "thicknessMm", label: "Layer thickness", kind: "number", default: 50, suffix: "mm" },
+      {
+        id: "densityKgM3",
+        label: "Asphalt density",
+        kind: "number",
+        default: 2400,
+        suffix: "kg/m³",
+      },
+      { id: "ratePerTon", label: "Rate per tonne", kind: "currency", default: 6000, prefix: "₹" },
+    ],
+    outputs: [
+      {
+        id: "tons",
+        label: "Asphalt required",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " t",
+        fractionDigits: 2,
+      },
+      { id: "costEstimate", label: "Cost estimate", format: "currency-inr" },
+    ],
+    compute: (i) => {
+      const tons = (numF(i.areaM2) * (numF(i.thicknessMm) / 1000) * numF(i.densityKgM3)) / 1000;
+      return { tons, costEstimate: tons * numF(i.ratePerTon) };
+    },
+    formula: "tonnes = area × (thickness ÷ 1000) × density ÷ 1000",
+  },
 ];

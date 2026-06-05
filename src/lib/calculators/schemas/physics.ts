@@ -525,4 +525,414 @@ export const PHYSICS_SCHEMAS: CalculatorSchema[] = [
     compute: (i) => ({ F: numF(i.k) * numF(i.x) }),
     formula: "F = k·x",
   },
+  // ── batch 4 — engineering (mechanical / fluid / thermal) ─────────────────
+  {
+    slug: "torque-force",
+    inputs: [
+      { id: "force", label: "Force", kind: "number", default: 100, suffix: "N" },
+      { id: "armM", label: "Lever arm length", kind: "number", default: 0.5, suffix: "m" },
+      {
+        id: "angleDeg",
+        label: "Angle between force & arm",
+        kind: "number",
+        default: 90,
+        suffix: "°",
+      },
+    ],
+    outputs: [
+      {
+        id: "torque",
+        label: "Torque",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " N·m",
+        fractionDigits: 2,
+      },
+    ],
+    compute: (i) => ({
+      torque: numF(i.force) * numF(i.armM) * Math.sin((numF(i.angleDeg) * Math.PI) / 180),
+    }),
+    formula: "τ = F·r·sin(θ)",
+  },
+  {
+    slug: "pipe-friction-loss",
+    inputs: [
+      { id: "frictionFactor", label: "Friction factor f", kind: "number", default: 0.02 },
+      { id: "lengthM", label: "Pipe length", kind: "number", default: 10, suffix: "m" },
+      { id: "diameterM", label: "Pipe diameter", kind: "number", default: 0.05, suffix: "m" },
+      { id: "velocity", label: "Flow velocity", kind: "number", default: 2, suffix: "m/s" },
+      { id: "density", label: "Fluid density", kind: "number", default: 1000, suffix: "kg/m³" },
+    ],
+    outputs: [
+      {
+        id: "headLoss",
+        label: "Head loss",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " m",
+        fractionDigits: 3,
+      },
+      {
+        id: "pressureDrop",
+        label: "Pressure drop",
+        format: "number",
+        suffix: " Pa",
+        fractionDigits: 1,
+      },
+    ],
+    compute: (i) => {
+      const d = numF(i.diameterM);
+      if (d <= 0) return {};
+      const v = numF(i.velocity);
+      const hf = (numF(i.frictionFactor) * (numF(i.lengthM) / d) * v * v) / (2 * G_EARTH);
+      return { headLoss: hf, pressureDrop: numF(i.density) * G_EARTH * hf };
+    },
+    formula: "h_f = f·(L/D)·v²/(2g) ; ΔP = ρ·g·h_f (Darcy–Weisbach)",
+  },
+  {
+    slug: "heat-exchanger-efficiency",
+    inputs: [
+      { id: "tHotIn", label: "Hot inlet temp", kind: "number", default: 120, suffix: "°C" },
+      { id: "tHotOut", label: "Hot outlet temp", kind: "number", default: 80, suffix: "°C" },
+      { id: "tColdIn", label: "Cold inlet temp", kind: "number", default: 30, suffix: "°C" },
+      { id: "tColdOut", label: "Cold outlet temp", kind: "number", default: 70, suffix: "°C" },
+      {
+        id: "config",
+        label: "Flow configuration",
+        kind: "select",
+        default: "counter",
+        options: [
+          { value: "counter", label: "Counter-flow" },
+          { value: "parallel", label: "Parallel-flow" },
+        ],
+      },
+    ],
+    outputs: [
+      {
+        id: "lmtd",
+        label: "LMTD",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " °C",
+        fractionDigits: 2,
+      },
+      { id: "effectiveness", label: "Effectiveness ε", format: "percent", fractionDigits: 1 },
+    ],
+    compute: (i) => {
+      const thi = numF(i.tHotIn);
+      const tho = numF(i.tHotOut);
+      const tci = numF(i.tColdIn);
+      const tco = numF(i.tColdOut);
+      const dT1 = String(i.config) === "parallel" ? thi - tci : thi - tco;
+      const dT2 = String(i.config) === "parallel" ? tho - tco : tho - tci;
+      if (dT1 <= 0 || dT2 <= 0) return {};
+      const lmtd = Math.abs(dT1 - dT2) < 1e-9 ? dT1 : (dT1 - dT2) / Math.log(dT1 / dT2);
+      const maxSpan = thi - tci;
+      const effectiveness = maxSpan > 0 ? (Math.max(thi - tho, tco - tci) / maxSpan) * 100 : 0;
+      return { lmtd, effectiveness };
+    },
+    formula: "LMTD = (ΔT1 − ΔT2) / ln(ΔT1/ΔT2) ; ε = ΔT_max-stream / (T_hot,in − T_cold,in)",
+  },
+  // ── batch 4 — physics ─────────────────────────────────────────────────────
+  {
+    slug: "refractive-index",
+    inputs: [
+      {
+        id: "mode",
+        label: "Solve from",
+        kind: "select",
+        default: "fromSpeed",
+        options: [
+          { value: "fromSpeed", label: "Speed of light in medium" },
+          { value: "fromAngles", label: "Incidence / refraction angles" },
+        ],
+      },
+      { id: "v", label: "Speed in medium (m/s)", kind: "number", default: 200000000 },
+      { id: "thetaI", label: "Incidence angle (°)", kind: "number", default: 45 },
+      { id: "thetaR", label: "Refraction angle (°)", kind: "number", default: 28 },
+    ],
+    outputs: [
+      {
+        id: "n",
+        label: "Refractive index n",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 3,
+      },
+    ],
+    compute: (i) => {
+      if (String(i.mode) === "fromAngles") {
+        const sinR = Math.sin((numF(i.thetaR) * Math.PI) / 180);
+        if (Math.abs(sinR) < 1e-12) return {};
+        return { n: Math.sin((numF(i.thetaI) * Math.PI) / 180) / sinR };
+      }
+      const v = numF(i.v);
+      if (v <= 0) return {};
+      return { n: 299792458 / v };
+    },
+    formula: "n = c/v or n = sin(θi)/sin(θr)",
+  },
+  {
+    slug: "lens-equation",
+    inputs: [
+      {
+        id: "objectDistance",
+        label: "Object distance d₀",
+        kind: "number",
+        default: 0.5,
+        suffix: "m",
+      },
+      { id: "focalLength", label: "Focal length f", kind: "number", default: 0.2, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "imageDistance",
+        label: "Image distance dᵢ",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " m",
+        fractionDigits: 3,
+      },
+      { id: "magnification", label: "Magnification m", format: "number", fractionDigits: 3 },
+      { id: "imageType", label: "Image", format: "text" },
+    ],
+    compute: (i) => {
+      const dO = numF(i.objectDistance);
+      const f = numF(i.focalLength);
+      if (dO === 0 || f === 0) return {};
+      if (Math.abs(dO - f) < 1e-12)
+        return { imageType: "Object at focal point — image at infinity" };
+      const dI = 1 / (1 / f - 1 / dO);
+      const m = -dI / dO;
+      return {
+        imageDistance: dI,
+        magnification: m,
+        imageType: `${dI > 0 ? "Real, inverted" : "Virtual, upright"} · ${Math.abs(m) > 1 ? "magnified" : "diminished"}`,
+      };
+    },
+    formula: "1/f = 1/d₀ + 1/dᵢ ; m = −dᵢ/d₀ (thin lens)",
+  },
+  {
+    slug: "snells-law",
+    inputs: [
+      { id: "n1", label: "Refractive index n₁", kind: "number", default: 1.0 },
+      { id: "n2", label: "Refractive index n₂", kind: "number", default: 1.5 },
+      { id: "theta1Deg", label: "Incidence angle θ₁", kind: "number", default: 30, suffix: "°" },
+    ],
+    outputs: [
+      {
+        id: "theta2Deg",
+        label: "Refraction angle θ₂",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " °",
+        fractionDigits: 2,
+      },
+      { id: "tir", label: "Total internal reflection", format: "text" },
+    ],
+    compute: (i) => {
+      const n2 = numF(i.n2);
+      if (n2 === 0) return {};
+      const sinT2 = (numF(i.n1) * Math.sin((numF(i.theta1Deg) * Math.PI) / 180)) / n2;
+      if (Math.abs(sinT2) > 1) return { tir: "Yes — beyond critical angle, ray fully reflects" };
+      return { theta2Deg: (Math.asin(sinT2) * 180) / Math.PI, tir: "No" };
+    },
+    formula: "n₁·sin(θ₁) = n₂·sin(θ₂)",
+  },
+  {
+    slug: "sound-intensity-db",
+    inputs: [
+      { id: "intensity", label: "Sound intensity (W/m²)", kind: "number", default: 0.000001 },
+    ],
+    outputs: [
+      {
+        id: "db",
+        label: "Sound level",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " dB",
+        fractionDigits: 1,
+      },
+      { id: "comparable", label: "Comparable to", format: "text" },
+    ],
+    compute: (i) => {
+      const I = numF(i.intensity);
+      if (I <= 0) return {};
+      const db = 10 * Math.log10(I / 1e-12);
+      const comparable =
+        db < 30
+          ? "Whisper"
+          : db < 60
+            ? "Normal conversation"
+            : db < 85
+              ? "City traffic"
+              : db < 110
+                ? "Power tools — hearing protection advised"
+                : "Rock concert / jet — dangerous";
+      return { db, comparable };
+    },
+    formula: "dB = 10·log₁₀(I/I₀), I₀ = 10⁻¹² W/m²",
+  },
+  {
+    slug: "latent-heat",
+    inputs: [
+      { id: "mass", label: "Mass", kind: "number", default: 1, suffix: "kg" },
+      {
+        id: "latentHeat",
+        label: "Specific latent heat L",
+        kind: "number",
+        default: 334000,
+        suffix: "J/kg",
+        hint: "Water: fusion 334,000 · vaporization 2,260,000",
+      },
+    ],
+    outputs: [
+      {
+        id: "heatQ",
+        label: "Energy required Q",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " J",
+        fractionDigits: 0,
+      },
+      { id: "kj", label: "Kilojoules", format: "number", suffix: " kJ", fractionDigits: 1 },
+    ],
+    compute: (i) => {
+      const q = numF(i.mass) * numF(i.latentHeat);
+      return { heatQ: q, kj: q / 1000 };
+    },
+    formula: "Q = m·L",
+  },
+  {
+    slug: "coulombs-law",
+    inputs: [
+      { id: "q1", label: "Charge q₁ (C)", kind: "number", default: 0.000001 },
+      { id: "q2", label: "Charge q₂ (C)", kind: "number", default: 0.000001 },
+      { id: "rM", label: "Separation r", kind: "number", default: 0.1, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "force",
+        label: "Electrostatic force",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " N",
+        fractionDigits: 4,
+      },
+      { id: "direction", label: "Direction", format: "text" },
+    ],
+    compute: (i) => {
+      const r = numF(i.rM);
+      if (r <= 0) return {};
+      const q1 = numF(i.q1);
+      const q2 = numF(i.q2);
+      const f = (8.9875e9 * q1 * q2) / (r * r);
+      return {
+        force: Math.abs(f),
+        direction: q1 * q2 > 0 ? "Repulsive (like charges)" : "Attractive (opposite charges)",
+      };
+    },
+    formula: "F = k·q₁·q₂/r², k = 8.99 × 10⁹ N·m²/C²",
+  },
+  {
+    slug: "magnetic-field-wire",
+    inputs: [
+      { id: "currentA", label: "Current", kind: "number", default: 10, suffix: "A" },
+      { id: "distanceM", label: "Distance from wire", kind: "number", default: 0.05, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "bField",
+        label: "Magnetic field B",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " T",
+        fractionDigits: 8,
+      },
+      { id: "microTesla", label: "Microtesla", format: "number", suffix: " µT", fractionDigits: 2 },
+    ],
+    compute: (i) => {
+      const r = numF(i.distanceM);
+      if (r <= 0) return {};
+      const b = (4 * Math.PI * 1e-7 * numF(i.currentA)) / (2 * Math.PI * r);
+      return { bField: b, microTesla: b * 1e6 };
+    },
+    formula: "B = μ₀·I / (2π·r), μ₀ = 4π × 10⁻⁷",
+  },
+  {
+    slug: "lorentz-force",
+    inputs: [
+      { id: "qC", label: "Charge q (C)", kind: "number", default: 1.6e-19 },
+      { id: "vMs", label: "Velocity v (m/s)", kind: "number", default: 1000000 },
+      { id: "bT", label: "Magnetic field B (T)", kind: "number", default: 0.01 },
+      { id: "eVm", label: "Electric field E (V/m)", kind: "number", default: 0 },
+      { id: "angleDeg", label: "Angle between v and B", kind: "number", default: 90, suffix: "°" },
+    ],
+    outputs: [
+      {
+        id: "force",
+        label: "Total force",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " N",
+        fractionDigits: 8,
+      },
+      { id: "magnetic", label: "Magnetic part", format: "number", suffix: " N", fractionDigits: 8 },
+      { id: "electric", label: "Electric part", format: "number", suffix: " N", fractionDigits: 8 },
+    ],
+    compute: (i) => {
+      const q = numF(i.qC);
+      const fM = Math.abs(
+        q * numF(i.vMs) * numF(i.bT) * Math.sin((numF(i.angleDeg) * Math.PI) / 180),
+      );
+      const fE = Math.abs(q * numF(i.eVm));
+      return { force: fE + fM, magnetic: fM, electric: fE };
+    },
+    formula: "F = qE + q·v·B·sin(θ)",
+  },
+  {
+    slug: "centripetal-force-shm",
+    inputs: [
+      { id: "mass", label: "Mass", kind: "number", default: 1, suffix: "kg" },
+      { id: "velocity", label: "Tangential velocity", kind: "number", default: 10, suffix: "m/s" },
+      { id: "radius", label: "Radius", kind: "number", default: 5, suffix: "m" },
+    ],
+    outputs: [
+      {
+        id: "force",
+        label: "Centripetal force",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " N",
+        fractionDigits: 2,
+      },
+      {
+        id: "acceleration",
+        label: "Centripetal acceleration",
+        format: "number",
+        suffix: " m/s²",
+        fractionDigits: 2,
+      },
+    ],
+    compute: (i) => {
+      const r = numF(i.radius);
+      if (r <= 0) return {};
+      const v = numF(i.velocity);
+      const a = (v * v) / r;
+      return { force: numF(i.mass) * a, acceleration: a };
+    },
+    formula: "F = m·v²/r ; a = v²/r",
+  },
 ];

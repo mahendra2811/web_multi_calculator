@@ -377,4 +377,294 @@ export const CHEMISTRY_SCHEMAS: CalculatorSchema[] = [
       return { mgL, ppm: mgL, pct: mgL / 10000 };
     },
   },
+  // ── batch 4 — chemistry ───────────────────────────────────────────────────
+  {
+    slug: "reaction-yield-percent",
+    inputs: [
+      { id: "actualG", label: "Actual yield", kind: "number", default: 18, suffix: "g" },
+      { id: "theoreticalG", label: "Theoretical yield", kind: "number", default: 22, suffix: "g" },
+    ],
+    outputs: [
+      {
+        id: "percentYield",
+        label: "Percent yield",
+        format: "percent",
+        tone: "primary",
+        big: true,
+        fractionDigits: 1,
+      },
+      { id: "lostG", label: "Yield lost", format: "number", suffix: " g", fractionDigits: 2 },
+    ],
+    compute: (i) => {
+      const t = numF(i.theoreticalG);
+      if (t <= 0) return {};
+      const a = numF(i.actualG);
+      return { percentYield: (a / t) * 100, lostG: t - a };
+    },
+    formula: "% yield = (actual ÷ theoretical) × 100",
+  },
+  {
+    slug: "equilibrium-constant",
+    inputs: [
+      {
+        id: "products",
+        label: "Products — one per line: concentration,coefficient",
+        kind: "textarea",
+        default: "0.5,2",
+        hint: "e.g. 0.5,2 means [X] = 0.5 M with coefficient 2",
+      },
+      {
+        id: "reactants",
+        label: "Reactants — one per line: concentration,coefficient",
+        kind: "textarea",
+        default: "0.2,1\n0.1,1",
+      },
+    ],
+    outputs: [
+      {
+        id: "kc",
+        label: "Equilibrium constant Kc",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 4,
+      },
+      { id: "position", label: "Equilibrium position", format: "text" },
+    ],
+    compute: (i) => {
+      const product = (txt: unknown) =>
+        String(txt)
+          .split(/\n+/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .reduce((acc, line) => {
+            const [c, n] = line.split(",").map((s) => Number(s.trim()));
+            if (!isFinite(c) || c <= 0) return NaN;
+            return acc * Math.pow(c, isFinite(n) && n > 0 ? n : 1);
+          }, 1);
+      const num = product(i.products);
+      const den = product(i.reactants);
+      if (!isFinite(num) || !isFinite(den) || den === 0) return {};
+      const kc = num / den;
+      return {
+        kc,
+        position:
+          kc > 1
+            ? "Products favoured (Kc > 1)"
+            : kc < 1
+              ? "Reactants favoured (Kc < 1)"
+              : "Balanced (Kc = 1)",
+      };
+    },
+    formula: "Kc = Π[products]^coeff ÷ Π[reactants]^coeff",
+  },
+  {
+    slug: "reaction-rate",
+    inputs: [
+      { id: "k", label: "Rate constant k", kind: "number", default: 0.05 },
+      {
+        id: "species",
+        label: "Species — one per line: concentration,order",
+        kind: "textarea",
+        default: "0.5,1\n0.2,2",
+        hint: "e.g. 0.5,1 means [A] = 0.5 M, first order",
+      },
+    ],
+    outputs: [
+      {
+        id: "rate",
+        label: "Reaction rate",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 6,
+      },
+      { id: "overallOrder", label: "Overall order", format: "number", fractionDigits: 1 },
+    ],
+    compute: (i) => {
+      let rate = numF(i.k);
+      let order = 0;
+      for (const line of String(i.species).split(/\n+/)) {
+        const t = line.trim();
+        if (!t) continue;
+        const [c, n] = t.split(",").map((s) => Number(s.trim()));
+        if (!isFinite(c) || c < 0) return {};
+        const ord = isFinite(n) ? n : 1;
+        rate *= Math.pow(c, ord);
+        order += ord;
+      }
+      return { rate, overallOrder: order };
+    },
+    formula: "Rate = k · Π [A]^order",
+  },
+  {
+    slug: "enthalpy-change-hess",
+    inputs: [
+      {
+        id: "steps",
+        label: "Steps — one per line: factor,ΔH (kJ/mol)",
+        kind: "textarea",
+        default: "1,-393.5\n2,-285.8\n-1,-890.4",
+        hint: "Use negative factor for a reversed step",
+      },
+    ],
+    outputs: [
+      {
+        id: "deltaH",
+        label: "Overall ΔH",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kJ/mol",
+        fractionDigits: 2,
+      },
+      { id: "kind", label: "Reaction is", format: "text" },
+    ],
+    compute: (i) => {
+      let sum = 0;
+      let any = false;
+      for (const line of String(i.steps).split(/\n+/)) {
+        const t = line.trim();
+        if (!t) continue;
+        const [f, h] = t.split(",").map((s) => Number(s.trim()));
+        if (!isFinite(f) || !isFinite(h)) return {};
+        sum += f * h;
+        any = true;
+      }
+      if (!any) return {};
+      return {
+        deltaH: sum,
+        kind: sum < 0 ? "Exothermic (releases heat)" : "Endothermic (absorbs heat)",
+      };
+    },
+    formula: "ΔH_overall = Σ (factor × ΔH_step) — Hess's law",
+  },
+  {
+    slug: "entropy-change",
+    inputs: [
+      {
+        id: "productsEntropy",
+        label: "Products — one per line: moles,S° (J/mol·K)",
+        kind: "textarea",
+        default: "1,213.8",
+      },
+      {
+        id: "reactantsEntropy",
+        label: "Reactants — one per line: moles,S° (J/mol·K)",
+        kind: "textarea",
+        default: "1,5.7\n1,205.2",
+      },
+    ],
+    outputs: [
+      {
+        id: "deltaS",
+        label: "ΔS° of reaction",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " J/mol·K",
+        fractionDigits: 2,
+      },
+      { id: "trend", label: "Disorder", format: "text" },
+    ],
+    compute: (i) => {
+      const total = (txt: unknown) =>
+        String(txt)
+          .split(/\n+/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .reduce((acc, line) => {
+            const [n, s] = line.split(",").map((v) => Number(v.trim()));
+            if (!isFinite(n) || !isFinite(s)) return NaN;
+            return acc + n * s;
+          }, 0);
+      const p = total(i.productsEntropy);
+      const r = total(i.reactantsEntropy);
+      if (!isFinite(p) || !isFinite(r)) return {};
+      const dS = p - r;
+      return { deltaS: dS, trend: dS > 0 ? "Increases (more disorder)" : "Decreases (more order)" };
+    },
+    formula: "ΔS° = Σn·S°(products) − Σn·S°(reactants)",
+  },
+  {
+    slug: "gibbs-free-energy",
+    inputs: [
+      { id: "deltaH", label: "Enthalpy change ΔH", kind: "number", default: -50, suffix: "kJ/mol" },
+      { id: "tempK", label: "Temperature", kind: "number", default: 298, suffix: "K" },
+      {
+        id: "deltaS",
+        label: "Entropy change ΔS",
+        kind: "number",
+        default: -0.1,
+        suffix: "kJ/mol·K",
+      },
+    ],
+    outputs: [
+      {
+        id: "deltaG",
+        label: "Gibbs free energy ΔG",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " kJ/mol",
+        fractionDigits: 2,
+      },
+      { id: "spontaneous", label: "Spontaneity", format: "text" },
+    ],
+    compute: (i) => {
+      const dG = numF(i.deltaH) - numF(i.tempK) * numF(i.deltaS);
+      return {
+        deltaG: dG,
+        spontaneous:
+          dG < 0
+            ? "Spontaneous (ΔG < 0)"
+            : dG > 0
+              ? "Non-spontaneous (ΔG > 0)"
+              : "At equilibrium (ΔG = 0)",
+      };
+    },
+    formula: "ΔG = ΔH − T·ΔS",
+  },
+  {
+    slug: "buffer-capacity",
+    inputs: [
+      { id: "weakAcidMol", label: "Weak acid amount", kind: "number", default: 0.1, suffix: "mol" },
+      {
+        id: "conjugateBaseMol",
+        label: "Conjugate base amount",
+        kind: "number",
+        default: 0.1,
+        suffix: "mol",
+      },
+      { id: "volumeL", label: "Solution volume", kind: "number", default: 1, suffix: "L" },
+    ],
+    outputs: [
+      {
+        id: "beta",
+        label: "Buffer capacity β",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " mol/L·pH",
+        fractionDigits: 4,
+      },
+      { id: "verdict", label: "Buffering", format: "text" },
+    ],
+    compute: (i) => {
+      const v = numF(i.volumeL);
+      if (v <= 0) return {};
+      const ca = numF(i.weakAcidMol) / v;
+      const cb = numF(i.conjugateBaseMol) / v;
+      if (ca + cb <= 0) return {};
+      const beta = (2.303 * (ca * cb)) / (ca + cb);
+      return {
+        beta,
+        verdict:
+          Math.min(ca, cb) / Math.max(ca, cb) > 0.5
+            ? "Strong buffering — acid/base ratio near 1:1"
+            : "Weak buffering — ratio far from 1:1",
+      };
+    },
+    formula: "β ≈ 2.303 · ([HA]·[A⁻]) / ([HA] + [A⁻])",
+  },
 ];

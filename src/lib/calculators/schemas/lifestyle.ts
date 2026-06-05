@@ -428,4 +428,321 @@ export const LIFESTYLE_SCHEMAS: CalculatorSchema[] = [
       };
     },
   },
+  // ── batch 4 — travel ──────────────────────────────────────────────────────
+  {
+    slug: "walking-time",
+    inputs: [
+      { id: "distanceKm", label: "Distance", kind: "number", default: 3, suffix: "km" },
+      { id: "paceKmh", label: "Walking pace", kind: "number", default: 5, suffix: "km/h" },
+    ],
+    outputs: [
+      {
+        id: "minutes",
+        label: "Walking time",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " min",
+        fractionDigits: 0,
+      },
+      { id: "hoursMinutes", label: "As h:mm", format: "text" },
+    ],
+    compute: (i) => {
+      const pace = numF(i.paceKmh);
+      if (pace <= 0) return {};
+      const mins = (numF(i.distanceKm) / pace) * 60;
+      return {
+        minutes: mins,
+        hoursMinutes: `${Math.floor(mins / 60)}h ${Math.round(mins % 60)}m`,
+      };
+    },
+    formula: "time = distance ÷ pace",
+  },
+  {
+    slug: "train-journey-duration",
+    inputs: [
+      { id: "distanceKm", label: "Journey distance", kind: "number", default: 500, suffix: "km" },
+      { id: "avgSpeedKmh", label: "Average speed", kind: "number", default: 80, suffix: "km/h" },
+      { id: "stops", label: "Number of stops", kind: "number", default: 5 },
+      { id: "stopMinutes", label: "Minutes per stop", kind: "number", default: 2 },
+    ],
+    outputs: [
+      {
+        id: "totalMinutes",
+        label: "Total journey time",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " min",
+        fractionDigits: 0,
+      },
+      { id: "hoursMinutes", label: "As h:mm", format: "text" },
+    ],
+    compute: (i) => {
+      const speed = numF(i.avgSpeedKmh);
+      if (speed <= 0) return {};
+      const mins = (numF(i.distanceKm) / speed) * 60 + numF(i.stops) * numF(i.stopMinutes);
+      return {
+        totalMinutes: mins,
+        hoursMinutes: `${Math.floor(mins / 60)}h ${Math.round(mins % 60)}m`,
+      };
+    },
+    formula: "time = distance ÷ speed + stops × minutes-per-stop",
+  },
+  {
+    slug: "bike-ride-time",
+    inputs: [
+      { id: "distanceKm", label: "Distance", kind: "number", default: 20, suffix: "km" },
+      { id: "paceKmh", label: "Cycling pace", kind: "number", default: 18, suffix: "km/h" },
+    ],
+    outputs: [
+      {
+        id: "minutes",
+        label: "Ride time",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " min",
+        fractionDigits: 0,
+      },
+      { id: "hoursMinutes", label: "As h:mm", format: "text" },
+    ],
+    compute: (i) => {
+      const pace = numF(i.paceKmh);
+      if (pace <= 0) return {};
+      const mins = (numF(i.distanceKm) / pace) * 60;
+      return {
+        minutes: mins,
+        hoursMinutes: `${Math.floor(mins / 60)}h ${Math.round(mins % 60)}m`,
+      };
+    },
+    formula: "time = distance ÷ pace",
+  },
+  {
+    slug: "travel-delay-prob",
+    inputs: [
+      {
+        id: "meanDelayMin",
+        label: "Average (mean) delay",
+        kind: "number",
+        default: 20,
+        suffix: "min",
+      },
+      { id: "stdDevMin", label: "Standard deviation", kind: "number", default: 15, suffix: "min" },
+      {
+        id: "thresholdMin",
+        label: "Major-delay threshold",
+        kind: "number",
+        default: 30,
+        suffix: "min",
+      },
+    ],
+    outputs: [
+      {
+        id: "expectedDelay",
+        label: "Expected delay",
+        format: "number",
+        tone: "primary",
+        big: true,
+        suffix: " min",
+        fractionDigits: 0,
+      },
+      {
+        id: "probAboveThreshold",
+        label: "P(delay > threshold)",
+        format: "percent",
+        fractionDigits: 1,
+      },
+    ],
+    compute: (i) => {
+      const sd = numF(i.stdDevMin);
+      const mean = numF(i.meanDelayMin);
+      if (sd <= 0)
+        return { expectedDelay: mean, probAboveThreshold: numF(i.thresholdMin) > mean ? 0 : 100 };
+      const z = (numF(i.thresholdMin) - mean) / sd;
+      // Abramowitz–Stegun approximation of the standard normal CDF
+      const t = 1 / (1 + 0.2316419 * Math.abs(z));
+      const d = 0.3989423 * Math.exp((-z * z) / 2);
+      let p =
+        d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      if (z < 0) p = 1 - p;
+      return { expectedDelay: mean, probAboveThreshold: p * 100 };
+    },
+    formula: "Normal model: P(delay > X) = 1 − Φ((X − μ)/σ)",
+  },
+  {
+    slug: "layover-min",
+    inputs: [
+      {
+        id: "airportTier",
+        label: "Airport size",
+        kind: "select",
+        default: "large",
+        options: [
+          { value: "small", label: "Small (regional)" },
+          { value: "medium", label: "Medium (hub)" },
+          { value: "large", label: "Large (international hub)" },
+        ],
+      },
+      { id: "intl", label: "International connection", kind: "toggle", default: true },
+      { id: "terminalChange", label: "Terminal change required", kind: "toggle", default: true },
+    ],
+    outputs: [
+      {
+        id: "minMinutes",
+        label: "Minimum layover",
+        format: "integer",
+        tone: "primary",
+        big: true,
+        suffix: " min",
+      },
+      { id: "recommended", label: "Recommended buffer", format: "text" },
+    ],
+    compute: (i) => {
+      const base = { small: 30, medium: 45, large: 60 }[String(i.airportTier)] ?? 45;
+      let mins = i.intl ? base + 45 : base;
+      if (i.terminalChange) mins += 30;
+      return {
+        minMinutes: mins,
+        recommended: `${mins + 30}–${mins + 60} min for a stress-free connection`,
+      };
+    },
+    formula: "Base by airport size (30/45/60) + 45 if international + 30 if terminal change",
+  },
+  // ── batch 4 — education ───────────────────────────────────────────────────
+  {
+    slug: "cgpa-percentage-custom",
+    inputs: [
+      { id: "cgpa", label: "CGPA", kind: "number", default: 8.5 },
+      {
+        id: "scale",
+        label: "Grading scale",
+        kind: "select",
+        default: "10",
+        options: [
+          { value: "10", label: "10-point (CBSE ×9.5)" },
+          { value: "4", label: "4-point (×25)" },
+          { value: "custom", label: "Custom factor" },
+        ],
+      },
+      { id: "factor", label: "Custom factor", kind: "number", default: 9.5 },
+    ],
+    outputs: [
+      {
+        id: "percentage",
+        label: "Percentage",
+        format: "percent",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+      },
+    ],
+    compute: (i) => {
+      const scale = String(i.scale);
+      const factor = scale === "10" ? 9.5 : scale === "4" ? 25 : numF(i.factor);
+      return { percentage: numF(i.cgpa) * factor };
+    },
+    formula: "CBSE 10-pt: % = CGPA × 9.5 · 4-pt: % = CGPA × 25 · custom: % = CGPA × factor",
+  },
+  {
+    slug: "cumulative-marks-predictor",
+    inputs: [
+      {
+        id: "completed",
+        label: "Completed — one per line: obtained,max",
+        kind: "textarea",
+        default: "72,100\n65,100\n80,100",
+      },
+      {
+        id: "pending",
+        label: "Pending — one per line: predicted,max",
+        kind: "textarea",
+        default: "70,100\n75,100",
+      },
+    ],
+    outputs: [
+      {
+        id: "predictedTotal",
+        label: "Predicted total marks",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 0,
+      },
+      { id: "predictedPct", label: "Predicted percentage", format: "percent", fractionDigits: 2 },
+      { id: "grade", label: "Indicative grade", format: "text" },
+    ],
+    compute: (i) => {
+      const parse = (txt: unknown) =>
+        String(txt)
+          .split(/\n+/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .map((l) => l.split(",").map((s) => Number(s.trim())));
+      const rows = [...parse(i.completed), ...parse(i.pending)];
+      let got = 0;
+      let max = 0;
+      for (const [o, m] of rows) {
+        if (!isFinite(o) || !isFinite(m) || m <= 0) return {};
+        got += o;
+        max += m;
+      }
+      if (max === 0) return {};
+      const pct = (got / max) * 100;
+      const grade =
+        pct >= 90
+          ? "A+"
+          : pct >= 80
+            ? "A"
+            : pct >= 70
+              ? "B"
+              : pct >= 60
+                ? "C"
+                : pct >= 50
+                  ? "D"
+                  : "F";
+      return { predictedTotal: got, predictedPct: pct, grade };
+    },
+    formula: "total = Σ obtained + Σ predicted ; % = total ÷ Σ max × 100",
+  },
+  {
+    slug: "course-credit-hours",
+    inputs: [
+      {
+        id: "courses",
+        label: "Courses — one credit value per line",
+        kind: "textarea",
+        default: "4\n4\n3\n3\n2",
+      },
+      { id: "requiredCredits", label: "Credits required", kind: "number", default: 120 },
+    ],
+    outputs: [
+      {
+        id: "totalCredits",
+        label: "Total credits",
+        format: "integer",
+        tone: "primary",
+        big: true,
+      },
+      { id: "remaining", label: "Credits remaining", format: "integer" },
+      { id: "gpaEligible", label: "Requirement met?", format: "text" },
+    ],
+    compute: (i) => {
+      let total = 0;
+      for (const line of String(i.courses).split(/\n+/)) {
+        const t = line.trim();
+        if (!t) continue;
+        const c = Number(t);
+        if (!isFinite(c) || c < 0) return {};
+        total += c;
+      }
+      const req = numF(i.requiredCredits);
+      return {
+        totalCredits: total,
+        remaining: Math.max(0, req - total),
+        gpaEligible: total >= req ? "Yes — requirement met" : `No — ${req - total} credits short`,
+      };
+    },
+    formula: "total = Σ credits ; eligible if total ≥ required",
+  },
 ];
