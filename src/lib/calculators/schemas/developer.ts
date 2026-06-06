@@ -399,4 +399,280 @@ export const DEVELOPER_SCHEMAS: CalculatorSchema[] = [
       return { cron, english: eng };
     },
   },
+  // ── batch 4 — developer tools ─────────────────────────────────────────────
+  {
+    slug: "color-contrast-wcag",
+    inputs: [
+      { id: "fg", label: "Foreground color (hex)", kind: "text", default: "#000000" },
+      { id: "bg", label: "Background color (hex)", kind: "text", default: "#ffffff" },
+    ],
+    outputs: [
+      {
+        id: "ratio",
+        label: "Contrast ratio",
+        format: "number",
+        tone: "primary",
+        big: true,
+        fractionDigits: 2,
+        suffix: ":1",
+      },
+      { id: "aaNormal", label: "AA normal text (≥ 4.5)", format: "text" },
+      { id: "aaLarge", label: "AA large text (≥ 3)", format: "text" },
+      { id: "aaaNormal", label: "AAA normal text (≥ 7)", format: "text" },
+    ],
+    compute: (i) => {
+      const parse = (s: unknown): [number, number, number] | null => {
+        let h = String(s).trim().replace(/^#/, "");
+        if (/^[0-9a-f]{3}$/i.test(h))
+          h = h
+            .split("")
+            .map((c) => c + c)
+            .join("");
+        if (!/^[0-9a-f]{6}$/i.test(h)) return null;
+        return [
+          parseInt(h.slice(0, 2), 16),
+          parseInt(h.slice(2, 4), 16),
+          parseInt(h.slice(4, 6), 16),
+        ];
+      };
+      const lum = (rgb: [number, number, number]) => {
+        const [r, g, b] = rgb.map((v) => {
+          const c = v / 255;
+          return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const fg = parse(i.fg);
+      const bg = parse(i.bg);
+      if (!fg || !bg) return {};
+      const l1 = lum(fg);
+      const l2 = lum(bg);
+      const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+      const pf = (ok: boolean) => (ok ? "Pass ✓" : "Fail ✗");
+      return {
+        ratio,
+        aaNormal: pf(ratio >= 4.5),
+        aaLarge: pf(ratio >= 3),
+        aaaNormal: pf(ratio >= 7),
+      };
+    },
+    formula: "WCAG: ratio = (L_lighter + 0.05) ÷ (L_darker + 0.05), L = relative luminance",
+  },
+  {
+    slug: "json-size",
+    inputs: [
+      {
+        id: "json",
+        label: "JSON document",
+        kind: "textarea",
+        default: '{\n  "name": "CalcMaster",\n  "calculators": 400\n}',
+      },
+    ],
+    outputs: [
+      {
+        id: "bytesRaw",
+        label: "Raw size",
+        format: "integer",
+        tone: "primary",
+        big: true,
+        suffix: " B",
+      },
+      { id: "bytesMinified", label: "Minified", format: "integer", suffix: " B" },
+      { id: "gzipEstimate", label: "Gzipped (est.)", format: "integer", suffix: " B" },
+      { id: "valid", label: "Valid JSON?", format: "text" },
+    ],
+    compute: (i) => {
+      const raw = String(i.json);
+      const bytesRaw = new TextEncoder().encode(raw).length;
+      try {
+        const minified = JSON.stringify(JSON.parse(raw));
+        const bytesMin = new TextEncoder().encode(minified).length;
+        return {
+          bytesRaw,
+          bytesMinified: bytesMin,
+          gzipEstimate: Math.max(20, Math.round(bytesMin * 0.3)),
+          valid: "Yes",
+        };
+      } catch {
+        return { bytesRaw, valid: "No — parse error", gzipEstimate: Math.round(bytesRaw * 0.3) };
+      }
+    },
+    formula: "UTF-8 byte length; gzip ≈ 0.3 × minified (typical for structured JSON)",
+  },
+  {
+    slug: "markdown-word-count",
+    inputs: [
+      {
+        id: "markdown",
+        label: "Markdown text",
+        kind: "textarea",
+        default: "# Hello\n\nThis is **bold** and [a link](https://example.com).",
+      },
+    ],
+    outputs: [
+      { id: "words", label: "Words", format: "integer", tone: "primary", big: true },
+      { id: "chars", label: "Characters (no spaces)", format: "integer" },
+      {
+        id: "readingTimeMin",
+        label: "Reading time",
+        format: "number",
+        suffix: " min",
+        fractionDigits: 1,
+      },
+    ],
+    compute: (i) => {
+      const stripped = String(i.markdown)
+        .replace(/```[\s\S]*?```/g, " ") // fenced code
+        .replace(/`[^`]*`/g, " ") // inline code
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links → keep text
+        .replace(/^#{1,6}\s+/gm, "") // headings
+        .replace(/[*_~>#|-]+/g, " ") // md punctuation
+        .replace(/\s+/g, " ")
+        .trim();
+      const words = stripped ? stripped.split(" ").length : 0;
+      return {
+        words,
+        chars: stripped.replace(/ /g, "").length,
+        readingTimeMin: words / 200,
+      };
+    },
+    formula: "Strip Markdown syntax → count words; reading time = words ÷ 200 wpm",
+  },
+  {
+    slug: "image-aspect-resize",
+    inputs: [
+      { id: "origW", label: "Original width", kind: "number", default: 1920, suffix: "px" },
+      { id: "origH", label: "Original height", kind: "number", default: 1080, suffix: "px" },
+      {
+        id: "targetW",
+        label: "Target width (0 = derive)",
+        kind: "number",
+        default: 1280,
+        suffix: "px",
+      },
+      {
+        id: "targetH",
+        label: "Target height (0 = derive)",
+        kind: "number",
+        default: 0,
+        suffix: "px",
+      },
+    ],
+    outputs: [
+      {
+        id: "newW",
+        label: "New width",
+        format: "integer",
+        tone: "primary",
+        big: true,
+        suffix: " px",
+      },
+      { id: "newH", label: "New height", format: "integer", suffix: " px" },
+      { id: "aspect", label: "Aspect ratio", format: "text" },
+    ],
+    compute: (i) => {
+      const ow = numF(i.origW);
+      const oh = numF(i.origH);
+      if (ow <= 0 || oh <= 0) return {};
+      const aspect = ow / oh;
+      const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+      const g = gcd(Math.round(ow), Math.round(oh));
+      const tw = numF(i.targetW);
+      const th = numF(i.targetH);
+      let newW: number;
+      let newH: number;
+      if (tw > 0) {
+        newW = tw;
+        newH = tw / aspect;
+      } else if (th > 0) {
+        newH = th;
+        newW = th * aspect;
+      } else {
+        return {};
+      }
+      return {
+        newW: Math.round(newW),
+        newH: Math.round(newH),
+        aspect: `${ow / g}:${oh / g} (${aspect.toFixed(3)})`,
+      };
+    },
+    formula: "aspect = W ÷ H ; given new W → H = W ÷ aspect (and vice versa)",
+  },
+  {
+    slug: "cron-next-run",
+    inputs: [
+      {
+        id: "expression",
+        label: "Cron expression (min hr dom mon dow)",
+        kind: "text",
+        default: "0 9 * * 1-5",
+        hint: "Supports *, lists (1,3), ranges (1-5), steps (*/15)",
+      },
+    ],
+    outputs: [
+      { id: "nextRun", label: "Next run", format: "text", tone: "primary", big: true },
+      { id: "nextRuns", label: "Following runs", format: "text" },
+    ],
+    compute: (i) => {
+      const parts = String(i.expression).trim().split(/\s+/);
+      if (parts.length !== 5) return { nextRun: "Invalid — need 5 fields (min hr dom mon dow)" };
+      const expand = (field: string, min: number, max: number): Set<number> | null => {
+        const out = new Set<number>();
+        for (const part of field.split(",")) {
+          const [rangePart, stepPart] = part.split("/");
+          const step = stepPart ? parseInt(stepPart, 10) : 1;
+          if (!isFinite(step) || step < 1) return null;
+          let lo = min;
+          let hi = max;
+          if (rangePart !== "*") {
+            const m = rangePart.match(/^(\d+)(?:-(\d+))?$/);
+            if (!m) return null;
+            lo = parseInt(m[1], 10);
+            hi = m[2] ? parseInt(m[2], 10) : stepPart ? max : lo;
+          }
+          if (lo < min || hi > max || lo > hi) return null;
+          for (let v = lo; v <= hi; v += step) out.add(v);
+        }
+        return out;
+      };
+      const mins = expand(parts[0], 0, 59);
+      const hrs = expand(parts[1], 0, 23);
+      const doms = expand(parts[2], 1, 31);
+      const mons = expand(parts[3], 1, 12);
+      const dows = expand(parts[4].replace(/7/g, "0"), 0, 6);
+      if (!mins || !hrs || !doms || !mons || !dows) return { nextRun: "Invalid field value" };
+      const domWild = parts[2] === "*";
+      const dowWild = parts[4] === "*";
+      const runs: string[] = [];
+      const d = new Date();
+      d.setSeconds(0, 0);
+      d.setMinutes(d.getMinutes() + 1);
+      for (
+        let iter = 0;
+        iter < 527040 && runs.length < 5;
+        iter++, d.setMinutes(d.getMinutes() + 1)
+      ) {
+        if (!mons.has(d.getMonth() + 1)) continue;
+        // Standard cron: if both dom and dow are restricted, match either
+        const domOk = doms.has(d.getDate());
+        const dowOk = dows.has(d.getDay());
+        if (!(domWild ? dowOk : dowWild ? domOk : domOk || dowOk)) continue;
+        if (!hrs.has(d.getHours()) || !mins.has(d.getMinutes())) continue;
+        runs.push(
+          d.toLocaleString("en-IN", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        );
+      }
+      if (!runs.length) return { nextRun: "No run found within the next year" };
+      return { nextRun: runs[0], nextRuns: runs.slice(1).join("  ·  ") };
+    },
+    formula: "Walk forward minute by minute matching min/hr/dom/mon/dow (local time)",
+  },
 ];
