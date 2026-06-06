@@ -11,6 +11,7 @@ import { HeroSearchTrigger } from "@/components/search/HeroSearchTrigger";
 import { FaqSection } from "@/components/calculator/FaqSection";
 import { JsonLd, faqSchema } from "@/components/seo/JsonLd";
 import { HOME_FAQS } from "@/lib/faqs/home";
+import { PwaInstallSection } from "@/components/pwa/PwaInstallSection";
 
 const POPULAR_SLUGS = ["sip", "emi", "bmi", "compound-interest", "percentage", "gst"] as const;
 
@@ -96,6 +97,11 @@ export default async function Home() {
             count: getCalculatorsByCategory(cat.id).length,
           }))}
         />
+      </section>
+
+      {/* Install as App */}
+      <section className="container-page py-12">
+        <PwaInstallSection />
       </section>
 
       <JsonLd data={faqSchema(HOME_FAQS.map((f) => ({ question: f.q, answer: f.a })))} />

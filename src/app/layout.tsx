@@ -9,6 +9,10 @@ import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { Analytics } from "@/components/analytics/Analytics";
 import { WebVitals } from "@/components/analytics/WebVitals";
 import { SearchPalette } from "@/components/search/SearchPalette";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { AppUpdateBanner } from "@/components/pwa/AppUpdateBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { PushOptIn } from "@/components/pwa/PushOptIn";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/seo/JsonLd";
 import { SITE } from "@/lib/site";
 import { CALCULATOR_COUNT_LABEL } from "@/constants/stats";
@@ -41,7 +45,15 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: SITE.name,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   alternates: {
     canonical: "/",
@@ -136,6 +148,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <Footer />
           <MobileTabBar />
           <SearchPalette />
+          <InstallPrompt />
+          <PushOptIn />
+          <AppUpdateBanner />
+          <OfflineBanner />
         </Providers>
         <Analytics />
         <WebVitals />

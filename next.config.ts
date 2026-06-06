@@ -11,8 +11,12 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   disable: process.env.NODE_ENV === "development",
+  // Merge our push handler into the generated SW
+  customWorkerSrc: "public",
+  customWorkerDest: "public",
   workboxOptions: {
     disableDevLogs: true,
+    importScripts: ["/sw-push.js"],
   },
 });
 

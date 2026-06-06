@@ -11,6 +11,7 @@ import { HeaderAllCategoriesMenu } from "./HeaderAllCategoriesMenu";
 import { HeaderProfileMenu } from "./HeaderProfileMenu";
 import { MobileDrawer } from "./MobileDrawer";
 import { useSearchPalette } from "@/lib/storage/search-palette";
+import { StreakBadge } from "@/components/pwa/StreakBadge";
 
 // Top 3 most-traffic categories
 const TOP_CAT_IDS = ["finance", "math", "health"] as const;
@@ -83,6 +84,7 @@ export function Header() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <StreakBadge />
             <button
               onClick={() => openSearch(true)}
               aria-label="Open search"

@@ -10,6 +10,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { CATEGORY_BADGE_CLASS } from "@/components/calculator/category-classes";
 import { track } from "@/lib/analytics/events";
+import { ReminderButton } from "@/components/pwa/ReminderButton";
 
 interface CalculatorShellProps {
   meta: CalculatorMeta;
@@ -27,6 +28,10 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
   useEffect(() => {
     touchRecent(meta.id);
     track.calculatorOpen(meta.id, meta.category);
+    // Increment use-count for PushOptIn trigger threshold
+    const key = "calcmaster:use-count";
+    const prev = Number(localStorage.getItem(key) ?? "0");
+    localStorage.setItem(key, String(prev + 1));
   }, [meta.id, meta.category, touchRecent]);
 
   const handleFavorite = () => {
@@ -75,7 +80,8 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
             <p className="text-text-secondary mt-1 text-sm">{meta.shortDesc}</p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1">
+          <ReminderButton calculatorSlug={meta.id} calculatorName={meta.name} />
           <Button variant="ghost" size="icon" aria-label="Favorite" onClick={handleFavorite}>
             <Heart className={cn("h-5 w-5", isFavorite && "fill-error text-error")} />
           </Button>
