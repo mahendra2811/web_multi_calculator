@@ -8,6 +8,12 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+  // OG card uses dark bg → dark logo blends in; fallback to master for local dev
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_APP_URL ?? SITE.url);
+  const logoUrl = `${baseUrl}/logo/secondary-dark-logo.png`;
+
   return new ImageResponse(
     <div
       style={{
@@ -22,23 +28,14 @@ export default async function Image() {
         fontFamily: "sans-serif",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <div
-          style={{
-            width: 64,
-            height: 64,
-            borderRadius: 16,
-            background: "white",
-            color: "#0D9488",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            fontWeight: 800,
-          }}
-        >
-          ₹
-        </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <img
+          src={logoUrl}
+          alt=""
+          width={72}
+          height={72}
+          style={{ borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+        />
         <span style={{ fontSize: 36, fontWeight: 700, letterSpacing: -0.5 }}>{SITE.name}</span>
       </div>
       <div

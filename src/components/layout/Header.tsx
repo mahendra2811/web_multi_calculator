@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, Search } from "lucide-react";
+import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { getCategoryBySlug } from "@/constants/calculators";
@@ -49,6 +50,9 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openSearch = useSearchPalette((s) => s.setOpen);
+  const { resolvedTheme } = useTheme();
+  const logoSrc =
+    resolvedTheme === "dark" ? "/logo/secondary-dark-logo.png" : "/logo/master-logo.png";
 
   const topCategories = TOP_CAT_IDS.map((id) => getCategoryBySlug(id)).filter(
     (c): c is NonNullable<ReturnType<typeof getCategoryBySlug>> => Boolean(c),
@@ -63,9 +67,14 @@ export function Header() {
             className="text-text flex shrink-0 items-center gap-2 font-bold"
             aria-label="CalcMaster home"
           >
-            <span className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg">
-              ₹
-            </span>
+            <Image
+              src={logoSrc}
+              alt="CalcMaster"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-lg object-cover"
+              priority
+            />
             <span className="hidden sm:inline">CalcMaster</span>
           </Link>
 
