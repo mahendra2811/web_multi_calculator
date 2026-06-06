@@ -19,13 +19,17 @@ const PRIMARY_BG = { r: 13, g: 148, b: 136, alpha: 1 };
 
 mkdirSync(ICONS_DIR, { recursive: true });
 
-/** Resize master logo to a square PNG buffer (white fill for transparent pixels). */
-async function logoToSize(size) {
-  return sharp(MASTER_LOGO)
+/** Resize master logo to a square PNG buffer. */
+async function logoToSize(size, { preserveAlpha = false } = {}) {
+  const image = sharp(MASTER_LOGO)
     .resize(size, size, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } })
-    .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .png()
-    .toBuffer();
+    .png();
+
+  if (preserveAlpha) {
+    return image.ensureAlpha().toBuffer();
+  }
+
+  return image.flatten({ background: { r: 255, g: 255, b: 255 } }).toBuffer();
 }
 
 /**
@@ -98,7 +102,7 @@ async function run() {
   }
 
   // favicon.ico — 16 + 32 + 48 frames
-  const frames = await Promise.all([16, 32, 48].map((s) => logoToSize(s)));
+  const frames = await Promise.all([16, 32, 48].map((s) => logoToSize(s, { preserveAlpha: true })));
   const ico = buildIco(frames, [16, 32, 48]);
   writeFileSync(resolve(ROOT, "src/app/favicon.ico"), ico);
   console.log("✓  favicon.ico");
