@@ -61,7 +61,7 @@ export function ReminderButton({ calculatorSlug, calculatorName }: ReminderButto
         }`}
       >
         {active ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-        {active ? "Reminder on" : "Remind me"}
+        {/* {active ? "Reminder on" : "Remind me"} */}
       </button>
 
       {open && (
