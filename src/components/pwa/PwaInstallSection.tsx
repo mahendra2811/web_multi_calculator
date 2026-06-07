@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Download, Smartphone, Monitor, CheckCircle2, Wifi, Zap, Shield } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -39,6 +40,10 @@ export function PwaInstallSection() {
   );
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [state, setState] = useState<"idle" | "installing" | "done">("idle");
+  const [showSteps, setShowSteps] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const logoSrc =
+    resolvedTheme === "dark" ? "/logo/secondary-dark-logo.png" : "/logo/master-logo.png";
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -47,11 +52,20 @@ export function PwaInstallSection() {
       setPlatform((p) => (p === "installed" ? "installed" : "android"));
     };
     window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    const installed = () => setPlatform("installed");
+    window.addEventListener("appinstalled", installed);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("appinstalled", installed);
+    };
   }, []);
 
   const handleInstall = async () => {
-    if (!deferred) return;
+    // No native prompt available yet — reveal the manual steps instead.
+    if (!deferred) {
+      setShowSteps(true);
+      return;
+    }
     setState("installing");
     await deferred.prompt();
     const { outcome } = await deferred.userChoice;
@@ -86,11 +100,11 @@ export function PwaInstallSection() {
         <div className="flex items-center gap-4">
           <div className="relative shrink-0">
             <Image
-              src="/icons/icon-96.png"
+              src={logoSrc}
               alt="CalcMaster"
               width={60}
               height={60}
-              className="ring-primary/20 rounded-2xl shadow-lg ring-2"
+              className="ring-primary/20 rounded-2xl object-cover shadow-lg ring-2"
             />
             <span className="bg-success ring-background absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ring-2">
               ✓
@@ -139,21 +153,22 @@ export function PwaInstallSection() {
               </div>
             </div>
 
-            {deferred ? (
-              <button
-                onClick={handleInstall}
-                disabled={state === "installing"}
-                className="bg-primary text-primary-foreground flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-lg transition-opacity hover:opacity-90 disabled:opacity-60"
-              >
-                <Download className="h-4 w-4 shrink-0" />
-                {state === "installing" ? "Installing…" : "Install App — It's Free"}
-              </button>
-            ) : (
+            <button
+              onClick={handleInstall}
+              disabled={state === "installing"}
+              className="bg-primary text-primary-foreground flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-lg transition-opacity hover:opacity-90 disabled:opacity-60"
+            >
+              <Download className="h-4 w-4 shrink-0" />
+              {state === "installing" ? "Installing…" : "Click to Download CalcMaster App"}
+            </button>
+
+            {/* Manual fallback — shown when the browser can't auto-prompt */}
+            {!deferred && showSteps && (
               <ol className="space-y-2">
                 {[
                   { n: "1", t: "Open this site in Chrome" },
-                  { n: "2", t: "Click the ⊕ icon in the address bar" },
-                  { n: "3", t: 'Click "Install" in the popup' },
+                  { n: "2", t: "Tap the ⋮ menu (top-right)" },
+                  { n: "3", t: 'Tap "Install app" / "Add to Home screen"' },
                 ].map(({ n, t }) => (
                   <li key={n} className="flex items-start gap-2.5 text-sm">
                     <span className="bg-primary/15 text-primary flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold">
