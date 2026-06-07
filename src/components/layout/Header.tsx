@@ -76,7 +76,10 @@ export function Header() {
               className="h-8 w-8 rounded-lg object-cover"
               priority
             />
-            <span className="hidden sm:inline">CalcMaster</span>
+            <span className="text-lg">
+              <span className="text-primary">Calc</span>
+              <span className="text-secondary">Master</span>
+            </span>
           </Link>
 
           {/* Desktop nav */}

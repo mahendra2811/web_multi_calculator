@@ -66,8 +66,8 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
             <Icon name={meta.icon} className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-text text-xl font-bold sm:text-2xl lg:text-3xl">{meta.name}</h1>
-            <p className="text-text-secondary mt-1 text-xs sm:text-sm">{meta.shortDesc}</p>
+            <h1 className="text-text text-md font-bold sm:text-lg lg:text-3xl">{meta.name}</h1>
+            {/* <p className="text-text-secondary mt-1 text-xs sm:text-sm">{meta.shortDesc}</p> */}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
