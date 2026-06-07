@@ -6,10 +6,49 @@ import type { BlogSummary } from "@/lib/blog/types";
 interface Props {
   posts: BlogSummary[];
   calculatorName: string;
+  /** Render only the grid, no section/header chrome (for CollapsibleSection). */
+  bare?: boolean;
 }
 
-export function CalculatorBlogLinks({ posts, calculatorName }: Props) {
+export function CalculatorBlogLinks({ posts, calculatorName, bare = false }: Props) {
   if (posts.length === 0) return null;
+
+  const grid = (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {posts.map((p) => (
+        <Link
+          key={p.slug}
+          href={`/blog/${p.slug}`}
+          className="group border-border bg-surface-elevated hover:border-primary/40 flex flex-col overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-md"
+        >
+          {p.coverImage && (
+            <div className="bg-surface relative aspect-[16/9] w-full overflow-hidden">
+              <Image
+                src={p.coverImage}
+                alt={p.coverAlt || p.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                unoptimized
+              />
+            </div>
+          )}
+          <div className="flex flex-1 flex-col gap-2 p-4">
+            <h3 className="text-text group-hover:text-primary line-clamp-2 text-sm font-semibold">
+              {p.title}
+            </h3>
+            <p className="text-text-secondary line-clamp-2 text-xs">{p.excerpt}</p>
+            <div className="text-text-tertiary mt-auto flex items-center gap-2 text-[11px]">
+              <Clock className="h-3 w-3" /> {p.readingMinutes} min
+              <ArrowRight className="ml-auto h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+
+  if (bare) return grid;
 
   return (
     <section className="container-page py-12">
@@ -24,39 +63,7 @@ export function CalculatorBlogLinks({ posts, calculatorName }: Props) {
           </p>
         </div>
       </header>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/blog/${p.slug}`}
-            className="group border-border bg-surface-elevated hover:border-primary/40 flex flex-col overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-md"
-          >
-            {p.coverImage && (
-              <div className="bg-surface relative aspect-[16/9] w-full overflow-hidden">
-                <Image
-                  src={p.coverImage}
-                  alt={p.coverAlt || p.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized
-                />
-              </div>
-            )}
-            <div className="flex flex-1 flex-col gap-2 p-4">
-              <h3 className="text-text group-hover:text-primary line-clamp-2 text-sm font-semibold">
-                {p.title}
-              </h3>
-              <p className="text-text-secondary line-clamp-2 text-xs">{p.excerpt}</p>
-              <div className="text-text-tertiary mt-auto flex items-center gap-2 text-[11px]">
-                <Clock className="h-3 w-3" /> {p.readingMinutes} min
-                <ArrowRight className="ml-auto h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {grid}
     </section>
   );
 }

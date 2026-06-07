@@ -2,7 +2,6 @@
 
 import { type ReactNode, useEffect } from "react";
 import { Heart, RotateCcw, Share2 } from "lucide-react";
-import { motion, useReducedMotion as useFmReducedMotion } from "framer-motion";
 import type { CalculatorMeta } from "@/types/calculator";
 import { useFavorites, useRecents } from "@/lib/storage/stores";
 import { Button } from "@/components/ui/Button";
@@ -23,7 +22,6 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
   const isFavorite = useFavorites((s) => s.ids.includes(meta.id));
   const toggleFavorite = useFavorites((s) => s.toggle);
   const touchRecent = useRecents((s) => s.touch);
-  const reduceMotion = useFmReducedMotion();
 
   useEffect(() => {
     touchRecent(meta.id);
@@ -55,29 +53,21 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
     }
   };
 
-  const motionProps = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: 8 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.25 },
-      };
-
   return (
-    <motion.div {...motionProps} className="container-page py-6 lg:py-10">
-      <header className="mb-6 flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
+    <div className="container-page py-6 lg:py-10">
+      <header className="mb-6 flex items-start justify-between gap-3 sm:gap-4">
+        <div className="flex items-start gap-3 sm:gap-4">
           <div
             className={cn(
-              "flex h-12 w-12 items-center justify-center rounded-xl",
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12",
               CATEGORY_BADGE_CLASS[meta.category],
             )}
           >
-            <Icon name={meta.icon} className="h-6 w-6" />
+            <Icon name={meta.icon} className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <div>
-            <h1 className="text-text text-2xl font-bold lg:text-3xl">{meta.name}</h1>
-            <p className="text-text-secondary mt-1 text-sm">{meta.shortDesc}</p>
+          <div className="min-w-0">
+            <h1 className="text-text text-xl font-bold sm:text-2xl lg:text-3xl">{meta.name}</h1>
+            <p className="text-text-secondary mt-1 text-xs sm:text-sm">{meta.shortDesc}</p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
@@ -100,6 +90,6 @@ export function CalculatorShell({ meta, inputs, result, onReset }: CalculatorShe
         <section className="lg:col-span-2">{inputs}</section>
         <section className="lg:col-span-3">{result}</section>
       </div>
-    </motion.div>
+    </div>
   );
 }

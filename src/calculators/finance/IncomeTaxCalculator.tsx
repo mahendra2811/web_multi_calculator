@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateIncomeTax } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -44,40 +44,40 @@ function IncomeTaxCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Old vs New regime · FY 2024-25</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Gross annual income"
               prefix="₹"
               value={gross}
-              onChange={(e) => setGross(Number(e.target.value) || 0)}
+              onValueChange={setGross}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="80C deduction (PPF, ELSS, EPF...)"
               prefix="₹"
               value={d80C}
-              onChange={(e) => setD80C(Number(e.target.value) || 0)}
+              onValueChange={setD80C}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="80D deduction (health insurance)"
               prefix="₹"
               value={d80D}
-              onChange={(e) => setD80D(Number(e.target.value) || 0)}
+              onValueChange={setD80D}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="HRA exemption"
               prefix="₹"
               value={hraEx}
-              onChange={(e) => setHraEx(Number(e.target.value) || 0)}
+              onValueChange={setHraEx}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Other deductions"
               prefix="₹"
               value={other}
-              onChange={(e) => setOther(Number(e.target.value) || 0)}
+              onValueChange={setOther}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -93,7 +93,7 @@ function IncomeTaxCalculator({ meta }: CalculatorRuntimeProps) {
               value={formatINR(r.savings)}
               tone="success"
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat
                 label="Old regime tax"
                 value={formatINR(r.oldTax)}

@@ -50,7 +50,7 @@ function StatisticsCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Result</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Stat label="Mean" value={formatNumber(r.mean, "en-IN", 3)} tone="primary" />
             <Stat label="Median" value={formatNumber(r.median, "en-IN", 3)} />
             <Stat label="Mode" value={r.mode.length ? r.mode.join(", ") : "—"} />

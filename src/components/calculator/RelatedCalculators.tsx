@@ -14,6 +14,8 @@ interface Props {
   /** Explicit slug list — overrides the auto-recommended set. */
   related?: string[];
   count?: number;
+  /** Render only the list, no section/header chrome (for CollapsibleSection). */
+  bare?: boolean;
 }
 
 const HAND_PICKED: Record<string, string[]> = {
@@ -51,7 +53,7 @@ function autoPick(current: CalculatorMeta, count: number): CalculatorMeta[] {
   return [...live, ...pending].slice(0, count);
 }
 
-export function RelatedCalculators({ current, related, count = 6 }: Props) {
+export function RelatedCalculators({ current, related, count = 6, bare = false }: Props) {
   const items = related
     ? related
         .map((id) => CALCULATORS.find((c) => c.id === id))
@@ -60,6 +62,34 @@ export function RelatedCalculators({ current, related, count = 6 }: Props) {
     : autoPick(current, count);
 
   if (items.length === 0) return null;
+
+  const list = (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((c) => (
+        <li key={c.id}>
+          <Link
+            href={`/calculator/${c.id}`}
+            className="group border-border bg-surface-elevated hover:border-primary/40 flex items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <div
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]}`}
+            >
+              <Icon name={c.icon} className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-text truncate text-sm font-semibold">{c.name}</h3>
+              <p className="text-text-tertiary truncate text-xs">{c.shortDesc}</p>
+            </div>
+            <ArrowRight
+              className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${CATEGORY_TEXT_CLASS[c.category]}`}
+            />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+
+  if (bare) return list;
 
   return (
     <section className="container-page no-print py-10">
@@ -74,29 +104,7 @@ export function RelatedCalculators({ current, related, count = 6 }: Props) {
           </p>
         </div>
       </header>
-      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((c) => (
-          <li key={c.id}>
-            <Link
-              href={`/calculator/${c.id}`}
-              className="group border-border bg-surface-elevated hover:border-primary/40 flex items-center gap-3 rounded-xl border p-3 transition-all hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${CATEGORY_BADGE_CLASS[c.category]}`}
-              >
-                <Icon name={c.icon} className="h-4 w-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-text truncate text-sm font-semibold">{c.name}</h3>
-                <p className="text-text-tertiary truncate text-xs">{c.shortDesc}</p>
-              </div>
-              <ArrowRight
-                className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${CATEGORY_TEXT_CLASS[c.category]}`}
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {list}
     </section>
   );
 }

@@ -149,22 +149,18 @@ export const CALCULATORS: CalculatorMeta[] = [
   // ── Finance (24 existing + 44 new = 68) ────────────────────────────────
   C("sip", "SIP Calculator", "Monthly mutual-fund SIP returns", "finance", "TrendingUp", {
     hasChart: true,
-    has3DView: true,
   }),
   C("lumpsum", "Lumpsum Calculator", "One-time investment growth", "finance", "Wallet", {
     hasChart: true,
-    has3DView: true,
   }),
   C("emi", "EMI Calculator", "Monthly loan installment", "finance", "CreditCard", {
     hasChart: true,
-    has3DView: true,
   }),
   C("simple-interest", "Simple Interest", "Flat interest calculation", "finance", "Banknote", {
     hasChart: true,
   }),
   C("compound-interest", "Compound Interest", "Power of compounding", "finance", "Layers", {
     hasChart: true,
-    has3DView: true,
   }),
   C("fd-rd", "FD / RD Calculator", "Fixed & recurring deposits", "finance", "Lock", {
     hasChart: true,
@@ -186,11 +182,9 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("income-tax", "Income Tax", "Old vs new tax regime", "finance", "FileText", { hasChart: true }),
   C("mortgage", "Mortgage", "Home loan EMI & total interest", "finance", "Home", {
     hasChart: true,
-    has3DView: true,
   }),
   C("retirement", "Retirement Planner", "Corpus you need", "finance", "Sun", {
     hasChart: true,
-    has3DView: true,
   }),
   C("roi", "ROI Calculator", "Return on investment", "finance", "Activity"),
   C("nps", "NPS Calculator", "National pension scheme", "finance", "Umbrella", { hasChart: true }),
@@ -200,11 +194,9 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("epf", "EPF Calculator", "Employee provident fund", "finance", "Users", { hasChart: true }),
   C("home-loan-vs-rent", "Home Loan vs Rent", "Buy vs rent comparison", "finance", "GitCompare", {
     hasChart: true,
-    has3DView: true,
   }),
   C("net-worth", "Net Worth", "Assets minus liabilities", "finance", "PieChart", {
     hasChart: true,
-    has3DView: true,
   }),
   C("break-even", "Break-Even", "Break-even point", "finance", "Flag", { hasChart: true }),
   C(
@@ -344,7 +336,6 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("matrix", "Matrix Calculator", "Add / multiply / determinant", "math", "Grid3x3"),
   C("quadratic", "Quadratic Solver", "Roots of ax² + bx + c", "math", "Sigma", {
     hasChart: true,
-    has3DView: true,
   }),
   C("logarithm", "Logarithm", "log_b(x) with base picker", "math", "Infinity"),
   C("permutation-combination", "Permutation & Combination", "nPr and nCr", "math", "Shuffle"),
@@ -407,7 +398,6 @@ export const CALCULATORS: CalculatorMeta[] = [
   C("pregnancy", "Pregnancy Due Date", "EDD & trimester", "health", "Baby"),
   C("macro", "Macro Splitter", "P/C/F split", "health", "PieChart", {
     hasChart: true,
-    has3DView: true,
   }),
   C("healthy-weight-range", "Healthy Weight Range", "BMI 18.5–25 by height", "health", "Scale"),
   C("lean-body-mass", "Lean Body Mass", "Boer formula", "health", "User"),
@@ -498,7 +488,6 @@ export const CALCULATORS: CalculatorMeta[] = [
   }),
   C("dca", "Dollar-Cost Averaging", "DCA simulation", "crypto", "Repeat", {
     hasChart: true,
-    has3DView: true,
   }),
   C("stock-average", "Stock Average", "Average price calc", "crypto", "Activity"),
   C("pe-ratio", "P/E Ratio", "Price-earnings ratio", "crypto", "BarChart"),

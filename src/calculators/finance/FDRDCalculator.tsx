@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
@@ -69,35 +69,35 @@ function FDRDCalculator({ meta }: CalculatorRuntimeProps) {
               </Button>
             </div>
             {mode === "fd" ? (
-              <Input
-                type="number"
+              <NumberInput
                 label="Principal"
                 prefix="₹"
                 value={principal}
-                onChange={(e) => setPrincipal(Number(e.target.value) || 0)}
+                onValueChange={setPrincipal}
+                allowNegative={false}
               />
             ) : (
-              <Input
-                type="number"
+              <NumberInput
                 label="Monthly deposit"
                 prefix="₹"
                 value={monthly}
-                onChange={(e) => setMonthly(Number(e.target.value) || 0)}
+                onValueChange={setMonthly}
+                allowNegative={false}
               />
             )}
-            <Input
-              type="number"
+            <NumberInput
               label="Interest rate"
               suffix="%"
               value={rate}
-              onChange={(e) => setRate(Number(e.target.value) || 0)}
+              onValueChange={setRate}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Tenure"
               suffix="yr"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -105,7 +105,7 @@ function FDRDCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Invested" value={formatINR(r.invested)} tone="secondary" />
               <Stat label="Interest" value={formatINR(r.interest)} tone="accent" />
               <Stat label="Maturity" value={formatINR(r.total)} tone="primary" />

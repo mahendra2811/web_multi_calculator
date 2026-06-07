@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Slider } from "@/components/ui/Slider";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
@@ -56,12 +56,14 @@ function CompoundInterestCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Principal"
                 prefix="₹"
                 value={principal}
-                onChange={(e) => setPrincipal(Number(e.target.value) || 0)}
+                onValueChange={setPrincipal}
+                min={1000}
+                max={10000000}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -73,12 +75,14 @@ function CompoundInterestCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Rate"
                 suffix="%"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value) || 0)}
+                onValueChange={setRate}
+                min={1}
+                max={30}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -90,12 +94,14 @@ function CompoundInterestCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Years"
                 suffix="yr"
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value) || 0)}
+                onValueChange={setYears}
+                min={1}
+                max={40}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -129,7 +135,7 @@ function CompoundInterestCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Invested" value={formatINR(r.invested)} tone="secondary" />
               <Stat label="Interest" value={formatINR(r.interest)} tone="accent" />
               <Stat label="Total" value={formatINR(r.total)} tone="primary" />

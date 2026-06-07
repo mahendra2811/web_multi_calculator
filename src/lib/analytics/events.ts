@@ -39,9 +39,6 @@ export const track = {
   favoriteToggle(slug: string, favorited: boolean) {
     send("favorite_toggle", { calculator_slug: slug, favorited });
   },
-  view3DToggle(slug: string, view: "2d" | "3d") {
-    send("view_3d_toggle", { calculator_slug: slug, view });
-  },
   searchQuery(query: string, resultCount: number) {
     send("search", { search_term: query, result_count: resultCount });
   },

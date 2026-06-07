@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { calculateIdealWeight } from "@/lib/calculators/health";
@@ -43,12 +43,12 @@ function IdealWeightCalculator({ meta }: CalculatorRuntimeProps) {
                 Female
               </Button>
             </div>
-            <Input
-              type="number"
+            <NumberInput
               label="Height"
               suffix="cm"
               value={height}
-              onChange={(e) => setHeight(Number(e.target.value) || 0)}
+              onValueChange={setHeight}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -58,7 +58,7 @@ function IdealWeightCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Estimates (kg)</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Stat label="Robinson" value={r.robinson.toFixed(1)} tone="primary" />
             <Stat label="Miller" value={r.miller.toFixed(1)} />
             <Stat label="Devine" value={r.devine.toFixed(1)} />

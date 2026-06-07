@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat } from "@/components/calculator/Stat";
 import { calculateCAGR } from "@/lib/calculators/finance";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
@@ -29,26 +29,26 @@ function CAGRCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Initial value"
               prefix="₹"
               value={initial}
-              onChange={(e) => setInitial(Number(e.target.value) || 0)}
+              onValueChange={setInitial}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Final value"
               prefix="₹"
               value={final}
-              onChange={(e) => setFinal(Number(e.target.value) || 0)}
+              onValueChange={setFinal}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Period"
               suffix="yr"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
           </CardContent>
         </Card>

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { applyDiscount, stackedDiscounts } from "@/lib/calculators/finance";
@@ -30,24 +30,22 @@ function DiscountCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Original price"
               prefix="₹"
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value) || 0)}
+              onValueChange={setPrice}
+              allowNegative={false}
             />
             {discounts.map((d, i) => (
               <div key={i} className="flex items-end gap-2">
-                <Input
-                  type="number"
+                <NumberInput
                   label={`Discount ${i + 1}`}
                   suffix="%"
                   value={d}
-                  onChange={(e) =>
-                    setDiscounts(
-                      discounts.map((x, idx) => (idx === i ? Number(e.target.value) || 0 : x)),
-                    )
+                  allowNegative={false}
+                  onValueChange={(n) =>
+                    setDiscounts(discounts.map((x, idx) => (idx === i ? n : x)))
                   }
                 />
                 {discounts.length > 1 && (
@@ -74,7 +72,7 @@ function DiscountCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="You pay" value={formatINR(stacked.final)} tone="primary" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Saved" value={formatINR(stacked.saved)} tone="success" />
               <Stat
                 label="Effective discount"

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { gstAddExclusive, gstRemoveInclusive } from "@/lib/calculators/finance";
@@ -55,12 +55,12 @@ function GSTCalculator({ meta }: CalculatorRuntimeProps) {
                 Remove GST
               </Button>
             </div>
-            <Input
-              type="number"
+            <NumberInput
               label={mode === "exclusive" ? "Base amount" : "Inclusive total"}
               prefix="₹"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value) || 0)}
+              onValueChange={setAmount}
+              allowNegative={false}
             />
             <div>
               <span className="text-text-secondary mb-2 block text-sm font-medium">GST slab</span>
@@ -75,10 +75,10 @@ function GSTCalculator({ meta }: CalculatorRuntimeProps) {
                     {s}%
                   </Button>
                 ))}
-                <Input
-                  type="number"
+                <NumberInput
                   value={gstPct}
-                  onChange={(e) => setGstPct(Number(e.target.value) || 0)}
+                  onValueChange={setGstPct}
+                  allowNegative={false}
                   className="!h-9 w-20"
                 />
               </div>
@@ -91,11 +91,11 @@ function GSTCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Result</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-3 pt-6">
+          <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
             <Stat label="Base" value={formatINR(r.base)} tone="secondary" />
             <Stat label="GST" value={formatINR(r.gst)} tone="accent" />
             <Stat label="Total" value={formatINR(r.total)} tone="primary" />
-            <div className="col-span-3 mt-4 grid grid-cols-3 gap-3">
+            <div className="col-span-1 mt-4 grid grid-cols-1 gap-3 sm:col-span-3 sm:grid-cols-3">
               <Stat label="CGST" value={formatINR(r.gst / 2)} />
               <Stat label="SGST" value={formatINR(r.gst / 2)} />
               <Stat label="IGST" value={formatINR(r.gst)} />

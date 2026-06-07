@@ -17,26 +17,27 @@ const TONE_CLASS: Record<NonNullable<StatProps["tone"]>, string> = {
 };
 
 /**
- * Mobile-safe result stat: scales font down on small screens, breaks long
- * numbers gracefully (overflow-hidden + truncate fallback), and supports a
- * subtitle hint.
+ * Mobile-safe result stat. On mobile each stat renders as a full-width
+ * "Label … value" row (stacks vertically, stays readable); from sm: up it
+ * becomes the stacked label-over-value column. Long numbers truncate with a
+ * title tooltip fallback.
  */
 export function Stat({ label, value, hint, tone = "default" }: StatProps) {
   return (
-    <div className="flex min-w-0 flex-col gap-1">
-      <span className="text-text-tertiary text-[10px] tracking-wide uppercase sm:text-xs">
+    <div className="flex min-w-0 flex-row items-baseline justify-between gap-3 sm:flex-col sm:items-start sm:gap-1">
+      <span className="text-text-tertiary shrink-0 text-[11px] tracking-wide uppercase sm:text-xs">
         {label}
       </span>
       <span
         className={cn(
-          "truncate text-lg font-bold tabular-nums sm:text-xl lg:text-2xl",
+          "truncate text-base font-bold tabular-nums sm:text-xl lg:text-2xl",
           TONE_CLASS[tone],
         )}
         title={value}
       >
         {value}
       </span>
-      {hint && <span className="text-text-tertiary text-xs">{hint}</span>}
+      {hint && <span className="text-text-tertiary hidden text-xs sm:block">{hint}</span>}
     </div>
   );
 }

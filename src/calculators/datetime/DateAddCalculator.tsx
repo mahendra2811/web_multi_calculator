@@ -4,6 +4,7 @@ import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat } from "@/components/calculator/Stat";
 import { addToDate } from "@/lib/calculators/datetime";
@@ -46,11 +47,11 @@ function DateAddCalculator({ meta }: CalculatorRuntimeProps) {
               value={start}
               onChange={(e) => setStart(e.target.value)}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Amount"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value) || 0)}
+              onValueChange={setAmount}
+              allowNegative={false}
             />
             <div>
               <span className="text-text-secondary mb-2 block text-sm font-medium">Unit</span>

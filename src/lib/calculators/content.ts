@@ -34,3 +34,38 @@ export async function getCalculatorContentHtml(slug: string): Promise<string | n
   cache.set(slug, html);
   return html;
 }
+
+export interface ContentSection {
+  /** Plain-text h2 heading; `null` for intro content before the first h2. */
+  heading: string | null;
+  html: string;
+}
+
+/**
+ * Same content as `getCalculatorContentHtml`, but split into one section per
+ * `<h2>` so the page can render each as a click-to-open accordion item.
+ * Intro text before the first h2 becomes a `heading: null` section.
+ */
+export async function getCalculatorContentSections(slug: string): Promise<ContentSection[] | null> {
+  const html = await getCalculatorContentHtml(slug);
+  if (!html) return null;
+  return splitByH2(html);
+}
+
+function stripTags(s: string): string {
+  return s.replace(/<[^>]*>/g, "").trim();
+}
+
+function splitByH2(html: string): ContentSection[] {
+  const parts = html.split(/(?=<h2[ >])/i);
+  const sections: ContentSection[] = [];
+  for (const part of parts) {
+    const m = part.match(/^<h2[^>]*>([\s\S]*?)<\/h2>/i);
+    if (m) {
+      sections.push({ heading: stripTags(m[1]), html: part.slice(m[0].length) });
+    } else if (part.trim()) {
+      sections.push({ heading: null, html: part });
+    }
+  }
+  return sections;
+}

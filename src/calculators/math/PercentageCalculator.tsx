@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { formatNumber } from "@/lib/format";
@@ -76,19 +76,8 @@ function PercentageCalculator({ meta }: CalculatorRuntimeProps) {
                 </Button>
               ))}
             </div>
-            <Input
-              label={labelA}
-              type="number"
-              value={a}
-              onChange={(e) => setA(Number(e.target.value) || 0)}
-              suffix={suffixA}
-            />
-            <Input
-              label={labelB}
-              type="number"
-              value={b}
-              onChange={(e) => setB(Number(e.target.value) || 0)}
-            />
+            <NumberInput label={labelA} value={a} onValueChange={setA} suffix={suffixA} />
+            <NumberInput label={labelB} value={b} onValueChange={setB} />
           </CardContent>
         </Card>
       }
@@ -106,7 +95,7 @@ function PercentageCalculator({ meta }: CalculatorRuntimeProps) {
                   : formatNumber(result, "en-IN", 2)
               }
             />
-            <div className="grid w-full grid-cols-2 gap-4">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="A" value={formatNumber(a, "en-IN", 2)} />
               <Stat label="B" value={formatNumber(b, "en-IN", 2)} />
             </div>

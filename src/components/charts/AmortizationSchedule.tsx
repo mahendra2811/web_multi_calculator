@@ -44,7 +44,7 @@ export function AmortizationSchedule({ rows, yearSubtotals = true }: Props) {
     });
 
   return (
-    <div className="border-border bg-surface-elevated overflow-hidden rounded-2xl border">
+    <div className="border-border bg-surface-elevated overflow-x-auto overflow-y-hidden rounded-2xl border">
       {/* Header */}
       <div className="border-border bg-surface text-text-secondary grid grid-cols-[1fr_repeat(3,minmax(0,1fr))_auto] gap-2 border-b px-3 py-2.5 text-xs font-semibold tracking-wide uppercase sm:grid-cols-[80px_repeat(3,1fr)_120px] sm:px-4">
         <span>Year</span>

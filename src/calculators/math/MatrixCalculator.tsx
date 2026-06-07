@@ -4,6 +4,7 @@ import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import {
   matrixAdd,
@@ -29,21 +30,22 @@ function MatrixGrid({
   onChange: (i: number, j: number, v: number) => void;
 }) {
   return (
-    <div
-      className="grid gap-1"
-      style={{ gridTemplateColumns: `repeat(${m.length}, minmax(0, 1fr))` }}
-    >
-      {m.map((row, i) =>
-        row.map((v, j) => (
-          <input
-            key={`${i}-${j}`}
-            type="number"
-            value={v}
-            onChange={(e) => onChange(i, j, Number(e.target.value) || 0)}
-            className="bg-surface-elevated text-text border-border focus:border-primary h-10 w-full rounded-md border px-2 text-center text-sm outline-none"
-          />
-        )),
-      )}
+    <div className="overflow-x-auto">
+      <div
+        className="grid min-w-max gap-1"
+        style={{ gridTemplateColumns: `repeat(${m.length}, minmax(0, 1fr))` }}
+      >
+        {m.map((row, i) =>
+          row.map((v, j) => (
+            <NumberInput
+              key={`${i}-${j}`}
+              value={v}
+              onValueChange={(n) => onChange(i, j, n)}
+              className="min-w-[3rem] text-center"
+            />
+          )),
+        )}
+      </div>
     </div>
   );
 }
@@ -141,20 +143,22 @@ function MatrixCalculator({ meta }: CalculatorRuntimeProps) {
             ) : result.kind === "number" ? (
               <Stat label="Determinant" value={String(result.v.toFixed(2))} tone="primary" />
             ) : (
-              <div
-                className="grid gap-1"
-                style={{ gridTemplateColumns: `repeat(${result.m[0].length}, minmax(0, 1fr))` }}
-              >
-                {result.m.flatMap((row, i) =>
-                  row.map((v, j) => (
-                    <div
-                      key={`${i}-${j}`}
-                      className="bg-surface text-text rounded-md p-2 text-center text-sm tabular-nums"
-                    >
-                      {Number.isFinite(v) ? v.toFixed(2) : "∞"}
-                    </div>
-                  )),
-                )}
+              <div className="overflow-x-auto">
+                <div
+                  className="grid min-w-max gap-1"
+                  style={{ gridTemplateColumns: `repeat(${result.m[0].length}, minmax(0, 1fr))` }}
+                >
+                  {result.m.flatMap((row, i) =>
+                    row.map((v, j) => (
+                      <div
+                        key={`${i}-${j}`}
+                        className="bg-surface text-text min-w-[3rem] rounded-md p-2 text-center text-sm tabular-nums"
+                      >
+                        {Number.isFinite(v) ? v.toFixed(2) : "∞"}
+                      </div>
+                    )),
+                  )}
+                </div>
               </div>
             )}
           </CardContent>

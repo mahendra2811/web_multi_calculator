@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
 
@@ -49,11 +49,11 @@ function CurrencyConverter({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Convert</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Amount"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value) || 0)}
+              onValueChange={setAmount}
+              allowNegative={false}
             />
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -92,7 +92,7 @@ function CurrencyConverter({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Result · {to}</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {allRows.map((r) => (
               <Stat
                 key={r.code}

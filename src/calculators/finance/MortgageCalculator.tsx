@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Slider } from "@/components/ui/Slider";
 import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
@@ -50,12 +50,14 @@ function MortgageCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="House price"
                 prefix="₹"
                 value={price}
-                onChange={(e) => setPrice(Number(e.target.value) || 0)}
+                onValueChange={setPrice}
+                min={1000000}
+                max={100000000}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -67,12 +69,14 @@ function MortgageCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Down payment"
                 suffix="%"
                 value={downPct}
-                onChange={(e) => setDownPct(Number(e.target.value) || 0)}
+                onValueChange={setDownPct}
+                min={0}
+                max={80}
+                allowNegative={false}
                 hint={`Down: ${formatINR((price * downPct) / 100)}`}
               />
               <Slider
@@ -85,12 +89,14 @@ function MortgageCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Rate"
                 suffix="%"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value) || 0)}
+                onValueChange={setRate}
+                min={4}
+                max={15}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -102,12 +108,14 @@ function MortgageCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
-                type="number"
+              <NumberInput
                 label="Tenure"
                 suffix="yr"
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value) || 0)}
+                onValueChange={setYears}
+                min={5}
+                max={30}
+                allowNegative={false}
               />
               <Slider
                 className="mt-2"
@@ -124,7 +132,7 @@ function MortgageCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-2 lg:grid-cols-4">
               <Stat label="EMI" value={formatINR(r.emi)} tone="primary" />
               <Stat label="Principal" value={formatINR(principal)} />
               <Stat label="Total interest" value={formatINR(r.totalInterest)} tone="error" />

@@ -68,7 +68,7 @@ function WorkingDaysCalculator({ meta }: CalculatorRuntimeProps) {
             {r ? (
               <>
                 <BigStat label="Working days" value={String(r.workingDays)} />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Stat label="Weekend days" value={String(r.weekendDays)} />
                   <Stat label="Holiday days" value={String(r.holidayDays)} />
                 </div>

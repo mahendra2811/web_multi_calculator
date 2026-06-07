@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateDCA } from "@/lib/calculators/crypto";
 import { GrowthChart } from "@/components/charts/GrowthChart";
@@ -43,11 +43,11 @@ function DCACalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Per-buy amount"
               value={perBuy}
-              onChange={(e) => setPerBuy(Number(e.target.value) || 0)}
+              onValueChange={setPerBuy}
+              allowNegative={false}
             />
             <label className="text-text-secondary text-sm font-medium">
               Prices at each buy (comma-separated)
@@ -63,7 +63,7 @@ function DCACalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-2 lg:grid-cols-4">
               <Stat label="Units" value={r.units.toFixed(4)} tone="primary" />
               <Stat label="Avg cost" value={formatNumber(r.avg, "en-IN", 2)} tone="secondary" />
               <Stat label="Invested" value={formatNumber(r.invested, "en-IN", 2)} />

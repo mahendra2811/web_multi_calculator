@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { macroSplit } from "@/lib/calculators/health";
@@ -35,12 +35,12 @@ function MacroCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Daily calories + split</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Daily calories"
               suffix="kcal"
               value={calories}
-              onChange={(e) => setCalories(Number(e.target.value) || 0)}
+              onValueChange={setCalories}
+              allowNegative={false}
             />
             <div className="flex flex-wrap gap-2">
               {PRESETS.map((p) => (
@@ -56,24 +56,24 @@ function MacroCalculator({ meta }: CalculatorRuntimeProps) {
                 </Button>
               ))}
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <Input
-                type="number"
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <NumberInput
                 label="Protein %"
                 value={split.protein}
-                onChange={(e) => setSplit({ ...split, protein: Number(e.target.value) || 0 })}
+                onValueChange={(n) => setSplit({ ...split, protein: n })}
+                allowNegative={false}
               />
-              <Input
-                type="number"
+              <NumberInput
                 label="Carbs %"
                 value={split.carbs}
-                onChange={(e) => setSplit({ ...split, carbs: Number(e.target.value) || 0 })}
+                onValueChange={(n) => setSplit({ ...split, carbs: n })}
+                allowNegative={false}
               />
-              <Input
-                type="number"
+              <NumberInput
                 label="Fats %"
                 value={split.fats}
-                onChange={(e) => setSplit({ ...split, fats: Number(e.target.value) || 0 })}
+                onValueChange={(n) => setSplit({ ...split, fats: n })}
+                allowNegative={false}
               />
             </div>
           </CardContent>
@@ -84,7 +84,7 @@ function MacroCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Daily grams</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-4">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Stat label="Protein" value={`${grams.protein.toFixed(0)} g`} tone="primary" />
             <Stat label="Carbs" value={`${grams.carbs.toFixed(0)} g`} tone="secondary" />
             <Stat label="Fats" value={`${grams.fats.toFixed(0)} g`} tone="accent" />

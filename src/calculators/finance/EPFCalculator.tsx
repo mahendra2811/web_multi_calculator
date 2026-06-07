@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import { calculateEPF, EPF_INTEREST_RATE } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -41,31 +41,31 @@ function EPFCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>EPF inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Basic + DA (monthly)"
               prefix="₹"
               value={basic}
-              onChange={(e) => setBasic(Number(e.target.value) || 0)}
+              onValueChange={setBasic}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Current age"
               value={age}
-              onChange={(e) => setAge(Number(e.target.value) || 0)}
+              onValueChange={setAge}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Retirement age"
               value={retire}
-              onChange={(e) => setRetire(Number(e.target.value) || 0)}
+              onValueChange={setRetire}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Current EPF balance"
               prefix="₹"
               value={balance}
-              onChange={(e) => setBalance(Number(e.target.value) || 0)}
+              onValueChange={setBalance}
+              allowNegative={false}
             />
             <p className="text-text-tertiary text-xs">
               Interest rate: {EPF_INTEREST_RATE}% (FY 2024-25)
@@ -78,12 +78,12 @@ function EPFCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>EPF maturity</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Stat label="Employee contribution" value={formatINR(r.employee)} tone="secondary" />
             <Stat label="Employer contribution" value={formatINR(r.employer)} />
             <Stat label="Total contribution" value={formatINR(r.totalContribution)} />
             <Stat label="Interest earned" value={formatINR(r.interest)} tone="accent" />
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <Stat label="Maturity amount" value={formatINR(r.maturity)} tone="primary" />
             </div>
           </CardContent>

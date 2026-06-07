@@ -144,7 +144,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="bg-background text-text flex min-h-full flex-col">
         <Providers locale={locale} messages={messages as Record<string, unknown>}>
           <Header />
-          <main className="flex-1 pb-20 md:pb-0">{children}</main>
+          <main className="flex-1 overflow-x-clip pb-20 md:pb-0">{children}</main>
           <Footer />
           <MobileTabBar />
           <SearchPalette />

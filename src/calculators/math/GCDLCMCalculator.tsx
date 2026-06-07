@@ -49,10 +49,10 @@ function GCDLCMCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Result</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Stat label="GCD" value={String(result.gcd)} tone="primary" />
             <Stat label="LCM" value={String(result.lcm)} tone="secondary" />
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <Stat label="Parsed" value={nums.length > 0 ? nums.join(", ") : "—"} />
             </div>
           </CardContent>

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateCryptoProfit } from "@/lib/calculators/crypto";
 import { formatNumber } from "@/lib/format";
@@ -35,30 +35,30 @@ function CryptoProfitCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Trade details</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Entry price"
               value={entry}
-              onChange={(e) => setEntry(Number(e.target.value) || 0)}
+              onValueChange={setEntry}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Exit price"
               value={exit}
-              onChange={(e) => setExit(Number(e.target.value) || 0)}
+              onValueChange={setExit}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Quantity"
               value={qty}
-              onChange={(e) => setQty(Number(e.target.value) || 0)}
+              onValueChange={setQty}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Total fees"
               suffix="%"
               value={fee}
-              onChange={(e) => setFee(Number(e.target.value) || 0)}
+              onValueChange={setFee}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -74,7 +74,7 @@ function CryptoProfitCalculator({ meta }: CalculatorRuntimeProps) {
               value={formatNumber(r.netProfit, "en-IN", 2)}
               tone={r.netProfit >= 0 ? "success" : "error"}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Stat
                 label="Net return"
                 value={`${r.netReturnPct.toFixed(2)}%`}

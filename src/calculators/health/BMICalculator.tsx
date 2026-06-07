@@ -3,7 +3,7 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Slider } from "@/components/ui/Slider";
 import { calculateBMI, type BMICategory } from "@/lib/calculators/health";
 import { useHistory } from "@/lib/storage/stores";
@@ -53,11 +53,13 @@ function BMICalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
-            <Input
+            <NumberInput
               label={t("height")}
-              type="number"
               value={height}
-              onChange={(e) => setHeight(Number(e.target.value) || 0)}
+              onValueChange={setHeight}
+              min={100}
+              max={220}
+              allowNegative={false}
               suffix="cm"
             />
             <Slider
@@ -68,11 +70,13 @@ function BMICalculator({ meta }: CalculatorRuntimeProps) {
               value={height}
               onChange={(e) => setHeight(Number(e.target.value))}
             />
-            <Input
+            <NumberInput
               label={t("weight")}
-              type="number"
               value={weight}
-              onChange={(e) => setWeight(Number(e.target.value) || 0)}
+              onValueChange={setWeight}
+              min={20}
+              max={200}
+              allowNegative={false}
               suffix="kg"
             />
             <Slider
@@ -101,7 +105,7 @@ function BMICalculator({ meta }: CalculatorRuntimeProps) {
             >
               {t(result.category)}
             </span>
-            <div className="grid w-full grid-cols-4 gap-1 text-center text-xs">
+            <div className="grid w-full grid-cols-2 gap-1 text-center text-[10px] sm:grid-cols-4 sm:text-xs">
               <Range
                 from={0}
                 to={18.5}

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { positionSize } from "@/lib/calculators/crypto";
 import { formatNumber } from "@/lib/format";
@@ -35,30 +35,30 @@ function PositionSizeCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Risk parameters</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Account size"
               value={acct}
-              onChange={(e) => setAcct(Number(e.target.value) || 0)}
+              onValueChange={setAcct}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Risk per trade"
               suffix="%"
               value={risk}
-              onChange={(e) => setRisk(Number(e.target.value) || 0)}
+              onValueChange={setRisk}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Entry price"
               value={entry}
-              onChange={(e) => setEntry(Number(e.target.value) || 0)}
+              onValueChange={setEntry}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Stop price"
               value={stop}
-              onChange={(e) => setStop(Number(e.target.value) || 0)}
+              onValueChange={setStop}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -70,7 +70,7 @@ function PositionSizeCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="Quantity" value={formatNumber(r.qty, "en-IN", 4)} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Stat label="Max risk" value={formatNumber(r.riskAmount, "en-IN", 2)} tone="error" />
               <Stat
                 label="Position value"

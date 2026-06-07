@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat } from "@/components/calculator/Stat";
 import {
@@ -51,17 +51,9 @@ function FractionCalculator({ meta }: CalculatorRuntimeProps) {
           <CardContent className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="flex flex-col gap-1">
-                <Input
-                  type="number"
-                  value={a1}
-                  onChange={(e) => setA1(Number(e.target.value) || 0)}
-                />
+                <NumberInput value={a1} onValueChange={setA1} />
                 <div className="border-border border-t" />
-                <Input
-                  type="number"
-                  value={a2}
-                  onChange={(e) => setA2(Number(e.target.value) || 1)}
-                />
+                <NumberInput value={a2} onValueChange={setA2} />
               </div>
               <div className="flex flex-wrap gap-1">
                 {OPS.map((o) => (
@@ -76,17 +68,9 @@ function FractionCalculator({ meta }: CalculatorRuntimeProps) {
                 ))}
               </div>
               <div className="flex flex-col gap-1">
-                <Input
-                  type="number"
-                  value={b1}
-                  onChange={(e) => setB1(Number(e.target.value) || 0)}
-                />
+                <NumberInput value={b1} onValueChange={setB1} />
                 <div className="border-border border-t" />
-                <Input
-                  type="number"
-                  value={b2}
-                  onChange={(e) => setB2(Number(e.target.value) || 1)}
-                />
+                <NumberInput value={b2} onValueChange={setB2} />
               </div>
             </div>
           </CardContent>

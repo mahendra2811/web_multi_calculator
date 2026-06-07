@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { stockAverage } from "@/lib/calculators/crypto";
@@ -40,17 +40,17 @@ function StockAverageCalculator({ meta }: CalculatorRuntimeProps) {
           <CardContent className="flex flex-col gap-3">
             {buys.map((b, i) => (
               <div key={i} className="flex items-end gap-2">
-                <Input
-                  type="number"
+                <NumberInput
                   label={`#${i + 1} price`}
                   value={b.price}
-                  onChange={(e) => updateBuy(i, "price", Number(e.target.value) || 0)}
+                  onValueChange={(n) => updateBuy(i, "price", n)}
+                  allowNegative={false}
                 />
-                <Input
-                  type="number"
+                <NumberInput
                   label="qty"
                   value={b.qty}
-                  onChange={(e) => updateBuy(i, "qty", Number(e.target.value) || 0)}
+                  onValueChange={(n) => updateBuy(i, "qty", n)}
+                  allowNegative={false}
                 />
                 {buys.length > 1 && (
                   <Button variant="ghost" size="sm" onClick={() => removeBuy(i)}>
@@ -72,7 +72,7 @@ function StockAverageCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="Avg price" value={formatNumber(r.avgPrice, "en-IN", 2)} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Stat label="Total quantity" value={formatNumber(r.totalQty, "en-IN", 4)} />
               <Stat label="Total cost" value={formatNumber(r.totalCost, "en-IN", 2)} />
             </div>

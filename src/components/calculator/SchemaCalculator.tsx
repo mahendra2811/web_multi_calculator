@@ -4,6 +4,7 @@ import { memo, useEffect, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { useHistory } from "@/lib/storage/stores";
@@ -227,24 +228,30 @@ function FieldRenderer({
       </div>
     );
   }
+  if (field.kind === "date" || field.kind === "text") {
+    return (
+      <Input
+        label={field.label}
+        type={field.kind}
+        value={String(value ?? "")}
+        onChange={(e) => onChange(e.target.value)}
+        prefix={field.prefix}
+        suffix={field.suffix}
+        hint={field.hint}
+      />
+    );
+  }
   return (
-    <Input
+    <NumberInput
       label={field.label}
-      type={field.kind === "date" ? "date" : field.kind === "text" ? "text" : "number"}
-      value={value as string | number}
-      onChange={(e) => {
-        const v =
-          field.kind === "date" || field.kind === "text"
-            ? e.target.value
-            : Number(e.target.value) || 0;
-        onChange(v);
-      }}
+      value={typeof value === "number" ? value : Number(value) || 0}
+      onValueChange={onChange}
       prefix={field.prefix}
       suffix={field.suffix}
       hint={field.hint}
       min={field.min}
       max={field.max}
-      step={field.step}
+      allowNegative={field.min != null ? field.min < 0 : true}
     />
   );
 }

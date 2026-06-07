@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Slider } from "@/components/ui/Slider";
 import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
@@ -48,11 +48,13 @@ function LumpsumCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
             <div>
-              <Input
+              <NumberInput
                 label="Investment"
-                type="number"
                 value={principal}
-                onChange={(e) => setPrincipal(Number(e.target.value) || 0)}
+                onValueChange={setPrincipal}
+                min={1000}
+                max={10000000}
+                allowNegative={false}
                 prefix="₹"
               />
               <Slider
@@ -65,11 +67,13 @@ function LumpsumCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
+              <NumberInput
                 label="Expected return"
-                type="number"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value) || 0)}
+                onValueChange={setRate}
+                min={1}
+                max={30}
+                allowNegative={false}
                 suffix="%"
               />
               <Slider
@@ -82,11 +86,13 @@ function LumpsumCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
+              <NumberInput
                 label="Time period"
-                type="number"
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value) || 0)}
+                onValueChange={setYears}
+                min={1}
+                max={40}
+                allowNegative={false}
                 suffix="yr"
               />
               <Slider
@@ -104,7 +110,7 @@ function LumpsumCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Invested" value={formatINR(r.invested)} tone="secondary" />
               <Stat label="Returns" value={formatINR(r.returns)} tone="accent" />
               <Stat label="Total" value={formatINR(r.total)} tone="primary" />

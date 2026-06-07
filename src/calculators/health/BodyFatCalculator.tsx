@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat } from "@/components/calculator/Stat";
 import { calculateBodyFat } from "@/lib/calculators/health";
@@ -54,34 +54,34 @@ function BodyFatCalculator({ meta }: CalculatorRuntimeProps) {
                 Female
               </Button>
             </div>
-            <Input
-              type="number"
+            <NumberInput
               label="Height"
               suffix="cm"
               value={height}
-              onChange={(e) => setHeight(Number(e.target.value) || 0)}
+              onValueChange={setHeight}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Neck"
               suffix="cm"
               value={neck}
-              onChange={(e) => setNeck(Number(e.target.value) || 0)}
+              onValueChange={setNeck}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Waist"
               suffix="cm"
               value={waist}
-              onChange={(e) => setWaist(Number(e.target.value) || 0)}
+              onValueChange={setWaist}
+              allowNegative={false}
             />
             {sex === "female" && (
-              <Input
-                type="number"
+              <NumberInput
                 label="Hip"
                 suffix="cm"
                 value={hip}
-                onChange={(e) => setHip(Number(e.target.value) || 0)}
+                onValueChange={setHip}
+                allowNegative={false}
               />
             )}
           </CardContent>

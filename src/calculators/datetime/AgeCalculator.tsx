@@ -36,12 +36,12 @@ function AgeCalculator({ meta }: CalculatorRuntimeProps) {
             {r ? (
               <>
                 <BigStat label="Age" value={`${r.years} yr ${r.months} mo ${r.days} d`} />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Stat label="Total months" value={formatNumber(r.totalMonths, "en-IN", 0)} />
                   <Stat label="Total weeks" value={formatNumber(r.totalWeeks, "en-IN", 0)} />
                   <Stat label="Total days" value={formatNumber(r.totalDays, "en-IN", 0)} />
                   <Stat label="Next birthday" value={`${r.daysToBirthday} days`} tone="secondary" />
-                  <div className="col-span-2">
+                  <div className="col-span-1 sm:col-span-2">
                     <Stat label="Born on" value={r.dayOfWeek} />
                   </div>
                 </div>

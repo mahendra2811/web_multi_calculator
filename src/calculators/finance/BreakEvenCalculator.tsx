@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { breakEven } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -30,26 +30,26 @@ function BreakEvenCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Cost & price</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Fixed costs"
               prefix="₹"
               value={fixed}
-              onChange={(e) => setFixed(Number(e.target.value) || 0)}
+              onValueChange={setFixed}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Price per unit"
               prefix="₹"
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value) || 0)}
+              onValueChange={setPrice}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Variable cost per unit"
               prefix="₹"
               value={variable}
-              onChange={(e) => setVariable(Number(e.target.value) || 0)}
+              onValueChange={setVariable}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -65,7 +65,7 @@ function BreakEvenCalculator({ meta }: CalculatorRuntimeProps) {
               value={Number.isFinite(r.units) ? Math.ceil(r.units).toLocaleString() : "∞"}
               tone="primary"
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat
                 label="Break-even revenue"
                 value={Number.isFinite(r.revenue) ? formatINR(r.revenue) : "—"}

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import { convertFactorBased, type Unit } from "@/lib/calculators/converter";
 import { formatNumber } from "@/lib/format";
@@ -35,12 +35,12 @@ function UnitConverter({ meta, units }: Props) {
             <CardTitle>Convert from</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Value"
               value={value}
-              onChange={(e) => setValue(Number(e.target.value) || 0)}
+              onValueChange={setValue}
               suffix={from.id}
+              allowNegative={false}
             />
             <label className="text-text-secondary text-sm font-medium">From unit</label>
             <select

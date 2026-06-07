@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateHRA } from "@/lib/calculators/finance";
@@ -36,26 +36,26 @@ function HRACalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Monthly amounts</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Basic salary"
               prefix="₹"
               value={basic}
-              onChange={(e) => setBasic(Number(e.target.value) || 0)}
+              onValueChange={setBasic}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="HRA received"
               prefix="₹"
               value={hra}
-              onChange={(e) => setHra(Number(e.target.value) || 0)}
+              onValueChange={setHra}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Rent paid"
               prefix="₹"
               value={rent}
-              onChange={(e) => setRent(Number(e.target.value) || 0)}
+              onValueChange={setRent}
+              allowNegative={false}
             />
             <div className="flex gap-2">
               <Button
@@ -85,7 +85,7 @@ function HRACalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="Exempt HRA" value={formatINR(r.exempt)} tone="success" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Taxable HRA" value={formatINR(r.taxable)} tone="error" />
               <Stat label="Actual HRA" value={formatINR(r.actual)} />
               <Stat

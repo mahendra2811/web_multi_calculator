@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat } from "@/components/calculator/Stat";
 import { logBase } from "@/lib/calculators/math";
@@ -35,12 +35,7 @@ function LogarithmCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Logarithm</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
-              label="Value"
-              value={value}
-              onChange={(e) => setValue(Number(e.target.value) || 0)}
-            />
+            <NumberInput label="Value" value={value} onValueChange={setValue} />
             <div className="flex flex-wrap gap-2">
               {BASES.map((b) => (
                 <Button
@@ -53,12 +48,7 @@ function LogarithmCalculator({ meta }: CalculatorRuntimeProps) {
                 </Button>
               ))}
             </div>
-            <Input
-              type="number"
-              label="Custom base"
-              value={base}
-              onChange={(e) => setBase(Number(e.target.value) || 0)}
-            />
+            <NumberInput label="Custom base" value={base} onValueChange={setBase} />
           </CardContent>
         </Card>
       }

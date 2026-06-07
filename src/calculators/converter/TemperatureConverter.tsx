@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { convertTemperature, type TempUnit } from "@/lib/calculators/converter";
@@ -42,13 +42,7 @@ function TemperatureConverter({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Convert from</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
-              label="Value"
-              value={value}
-              onChange={(e) => setValue(Number(e.target.value) || 0)}
-              suffix={`°${from}`}
-            />
+            <NumberInput label="Value" value={value} onValueChange={setValue} suffix={`°${from}`} />
             <div className="flex gap-2">
               {UNITS.map((u) => (
                 <Button

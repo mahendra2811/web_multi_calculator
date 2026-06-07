@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat, BigStat } from "@/components/calculator/Stat";
 import { quadraticRoots } from "@/lib/calculators/math";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
@@ -28,25 +28,10 @@ function QuadraticSolver({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>ax² + bx + c = 0</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-3">
-            <Input
-              label="a"
-              type="number"
-              value={a}
-              onChange={(e) => setA(Number(e.target.value) || 0)}
-            />
-            <Input
-              label="b"
-              type="number"
-              value={b}
-              onChange={(e) => setB(Number(e.target.value) || 0)}
-            />
-            <Input
-              label="c"
-              type="number"
-              value={c}
-              onChange={(e) => setC(Number(e.target.value) || 0)}
-            />
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <NumberInput label="a" value={a} onValueChange={setA} />
+            <NumberInput label="b" value={b} onValueChange={setB} />
+            <NumberInput label="c" value={c} onValueChange={setC} />
           </CardContent>
         </Card>
       }
@@ -76,7 +61,7 @@ function QuadraticSolver({ meta }: CalculatorRuntimeProps) {
               tone={result.kind === "complex" ? "secondary" : "primary"}
             />
             {result.kind !== "invalid" && "discriminant" in result && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Stat label="Discriminant" value={String(result.discriminant)} />
                 <Stat label="Type" value={result.kind} />
               </div>

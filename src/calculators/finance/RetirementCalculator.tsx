@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateRetirement } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -49,52 +49,52 @@ function RetirementCalculator({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Retirement plan</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <Input
-              type="number"
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <NumberInput
               label="Current age"
               value={currentAge}
-              onChange={(e) => setCurrentAge(Number(e.target.value) || 0)}
+              onValueChange={setCurrentAge}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Retire age"
               value={retireAge}
-              onChange={(e) => setRetireAge(Number(e.target.value) || 0)}
+              onValueChange={setRetireAge}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Life expectancy"
               value={lifeExp}
-              onChange={(e) => setLifeExp(Number(e.target.value) || 0)}
+              onValueChange={setLifeExp}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Monthly exp (today)"
               prefix="₹"
               value={monthlyExp}
-              onChange={(e) => setMonthlyExp(Number(e.target.value) || 0)}
+              onValueChange={setMonthlyExp}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Inflation"
               suffix="%"
               value={inflation}
-              onChange={(e) => setInflation(Number(e.target.value) || 0)}
+              onValueChange={setInflation}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Pre-retire return"
               suffix="%"
               value={preReturn}
-              onChange={(e) => setPreReturn(Number(e.target.value) || 0)}
+              onValueChange={setPreReturn}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Post-retire return"
               suffix="%"
               value={postReturn}
-              onChange={(e) => setPostReturn(Number(e.target.value) || 0)}
+              onValueChange={setPostReturn}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -106,7 +106,7 @@ function RetirementCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="Corpus at retirement" value={formatINR(r.corpus)} tone="primary" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Monthly SIP needed" value={formatINR(r.monthlySip)} tone="secondary" />
               <Stat label="Monthly expense @ retirement" value={formatINR(r.expenseAtRetirement)} />
               <Stat label="Years to retire" value={`${r.yrsTo}`} />

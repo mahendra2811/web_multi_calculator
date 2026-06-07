@@ -99,7 +99,7 @@ function BasicCalculator({ meta }: CalculatorRuntimeProps) {
           <div className="bg-surface text-text rounded-xl px-4 py-6 text-right text-4xl font-bold tabular-nums">
             {state.display}
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-2">
+          <div className="mt-4 grid grid-cols-4 gap-1.5">
             {KEYS.flat().map((k) => (
               <Button
                 key={k}
@@ -112,7 +112,7 @@ function BasicCalculator({ meta }: CalculatorRuntimeProps) {
                 }
                 size="lg"
                 onClick={() => press(k)}
-                className={cn(k === "0" && "col-span-2")}
+                className={cn("min-w-0 px-0", k === "0" && "col-span-2")}
               >
                 {k}
               </Button>

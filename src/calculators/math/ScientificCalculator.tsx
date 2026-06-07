@@ -65,7 +65,7 @@ function ScientificCalculator({ meta }: CalculatorRuntimeProps) {
               onChange={(e) => setExpr(e.target.value)}
               placeholder="e.g. sin(45 deg)^2 + log(100, 10)"
             />
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-1.5">
               {FN_BUTTONS.flat().map((k, i) => (
                 <Button
                   key={`${k}-${i}`}
@@ -78,6 +78,7 @@ function ScientificCalculator({ meta }: CalculatorRuntimeProps) {
                         : "secondary"
                   }
                   onClick={() => append(k)}
+                  className="min-w-0 px-0"
                 >
                   {k}
                 </Button>

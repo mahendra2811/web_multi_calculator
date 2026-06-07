@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat } from "@/components/calculator/Stat";
 import { isPrime, primeFactors } from "@/lib/calculators/math";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
@@ -27,12 +27,7 @@ function PrimeChecker({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Number</CardTitle>
           </CardHeader>
           <CardContent>
-            <Input
-              type="number"
-              label="N"
-              value={n}
-              onChange={(e) => setN(Number(e.target.value) || 0)}
-            />
+            <NumberInput label="N" value={n} onValueChange={setN} allowNegative={false} />
           </CardContent>
         </Card>
       }

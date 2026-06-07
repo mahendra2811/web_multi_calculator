@@ -70,7 +70,7 @@ function NumberSystemConverter({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>All bases</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Stat label="Binary" value={conv.bin || "—"} />
             <Stat label="Octal" value={conv.oct || "—"} />
             <Stat label="Decimal" value={conv.dec || "—"} tone="primary" />

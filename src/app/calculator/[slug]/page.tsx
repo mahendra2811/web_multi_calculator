@@ -7,8 +7,9 @@ import { CalculatorBlogLinks } from "@/components/calculator/CalculatorBlogLinks
 import { CalculatorContent } from "@/components/calculator/CalculatorContent";
 import { FaqSection } from "@/components/calculator/FaqSection";
 import { RelatedCalculators } from "@/components/calculator/RelatedCalculators";
+import { CollapsibleSection } from "@/components/calculator/CollapsibleSection";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
-import { getCalculatorContentHtml } from "@/lib/calculators/content";
+import { getCalculatorContentSections } from "@/lib/calculators/content";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -60,7 +61,7 @@ export default async function CalculatorPage({ params }: PageParams) {
   const category = getCategoryBySlug(meta.category);
   const url = absoluteUrl(`/calculator/${meta.id}`);
   const faqs = getFaqsFor(meta);
-  const contentHtml = await getCalculatorContentHtml(meta.id);
+  const contentSections = await getCalculatorContentSections(meta.id);
 
   const schemas = [
     softwareApplicationSchema({
@@ -93,10 +94,22 @@ export default async function CalculatorPage({ params }: PageParams) {
       >
         <CalculatorLoader meta={meta} />
       </Suspense>
-      {contentHtml && <CalculatorContent html={contentHtml} title={`Guide: ${meta.name}`} />}
-      <CalculatorBlogLinks posts={blogs} calculatorName={meta.name} />
-      <RelatedCalculators current={meta} />
-      <FaqSection faqs={faqs} calculatorName={meta.name} />
+      {contentSections && (
+        <CalculatorContent sections={contentSections} title={`Guide: ${meta.name}`} />
+      )}
+      <CollapsibleSection title="Related calculators" className="no-print">
+        <RelatedCalculators current={meta} bare />
+      </CollapsibleSection>
+      {blogs.length > 0 && (
+        <CollapsibleSection title="Guides & articles" className="no-print">
+          <CalculatorBlogLinks posts={blogs} calculatorName={meta.name} bare />
+        </CollapsibleSection>
+      )}
+      {faqs.length > 0 && (
+        <CollapsibleSection title="FAQs">
+          <FaqSection faqs={faqs} calculatorName={meta.name} bare />
+        </CollapsibleSection>
+      )}
     </>
   );
 }

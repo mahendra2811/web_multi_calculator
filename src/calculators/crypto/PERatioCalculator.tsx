@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat } from "@/components/calculator/Stat";
 import { peRatio } from "@/lib/calculators/crypto";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
@@ -27,18 +27,13 @@ function PERatioCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Stock price"
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value) || 0)}
+              onValueChange={setPrice}
+              allowNegative={false}
             />
-            <Input
-              type="number"
-              label="EPS (annual)"
-              value={eps}
-              onChange={(e) => setEps(Number(e.target.value) || 0)}
-            />
+            <NumberInput label="EPS (annual)" value={eps} onValueChange={setEps} />
           </CardContent>
         </Card>
       }

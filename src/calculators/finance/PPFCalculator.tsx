@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
 import {
@@ -34,20 +34,20 @@ function PPFCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>PPF inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Yearly investment"
               prefix="₹"
               value={yearly}
-              onChange={(e) => setYearly(Number(e.target.value) || 0)}
+              onValueChange={setYearly}
+              allowNegative={false}
               hint={`Cap: ₹${PPF_MAX_INVESTMENT.toLocaleString()}`}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Interest rate"
               suffix="%"
               value={rate}
-              onChange={(e) => setRate(Number(e.target.value) || 0)}
+              onValueChange={setRate}
+              allowNegative={false}
             />
             <p className="text-text-tertiary text-xs">Tenure fixed at {PPF_TENURE} years.</p>
           </CardContent>
@@ -56,7 +56,7 @@ function PPFCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Invested" value={formatINR(r.invested)} tone="secondary" />
               <Stat label="Interest" value={formatINR(r.interest)} tone="accent" />
               <Stat label="Maturity" value={formatINR(r.total)} tone="primary" />

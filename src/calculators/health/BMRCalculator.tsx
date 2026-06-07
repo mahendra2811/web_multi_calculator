@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateBMR, calculateTDEE, type ActivityLevel } from "@/lib/calculators/health";
@@ -65,26 +65,26 @@ function BMRCalculator({ meta }: CalculatorRuntimeProps) {
                 Female
               </Button>
             </div>
-            <Input
-              type="number"
+            <NumberInput
               label="Weight"
               suffix="kg"
               value={weight}
-              onChange={(e) => setWeight(Number(e.target.value) || 0)}
+              onValueChange={setWeight}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Height"
               suffix="cm"
               value={height}
-              onChange={(e) => setHeight(Number(e.target.value) || 0)}
+              onValueChange={setHeight}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Age"
               suffix="yr"
               value={age}
-              onChange={(e) => setAge(Number(e.target.value) || 0)}
+              onValueChange={setAge}
+              allowNegative={false}
             />
             <div>
               <span className="text-text-secondary mb-2 block text-sm font-medium">Activity</span>
@@ -111,7 +111,7 @@ function BMRCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6 py-6">
             <BigStat label="BMR (rest)" value={`${formatNumber(bmr, "en-IN", 0)} kcal`} />
-            <div className="grid w-full grid-cols-2 gap-4">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat
                 label="TDEE (total daily)"
                 value={`${formatNumber(tdee, "en-IN", 0)} kcal`}

@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { calculateROI } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -30,26 +30,26 @@ function ROICalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Investment</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Initial value"
               prefix="₹"
               value={initial}
-              onChange={(e) => setInitial(Number(e.target.value) || 0)}
+              onValueChange={setInitial}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Final value"
               prefix="₹"
               value={final}
-              onChange={(e) => setFinal(Number(e.target.value) || 0)}
+              onValueChange={setFinal}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Period"
               suffix="yr"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -65,7 +65,7 @@ function ROICalculator({ meta }: CalculatorRuntimeProps) {
               value={`${r.totalReturn.toFixed(2)}%`}
               tone={r.totalReturn >= 0 ? "success" : "error"}
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Annualized" value={`${r.annualized.toFixed(2)}%`} tone="primary" />
               <Stat label="Profit" value={formatINR(r.profit)} />
             </div>

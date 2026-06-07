@@ -30,7 +30,6 @@ export interface CalculatorMeta {
   icon: string;
   keywords?: string[];
   hasChart?: boolean;
-  has3DView?: boolean;
   /** Optional Hindi translations (top calculators only). */
   nameHi?: string;
   shortDescHi?: string;

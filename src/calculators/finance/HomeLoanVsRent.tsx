@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { homeVsRent } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -55,55 +55,55 @@ function HomeLoanVsRent({ meta }: CalculatorRuntimeProps) {
           <CardHeader>
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
-            <Input
-              type="number"
+          <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <NumberInput
               label="House price"
               prefix="₹"
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value) || 0)}
+              onValueChange={setPrice}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Down %"
               suffix="%"
               value={downPct}
-              onChange={(e) => setDownPct(Number(e.target.value) || 0)}
+              onValueChange={setDownPct}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Loan rate"
               suffix="%"
               value={loanRate}
-              onChange={(e) => setLoanRate(Number(e.target.value) || 0)}
+              onValueChange={setLoanRate}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Tenure"
               suffix="yr"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Monthly rent"
               prefix="₹"
               value={rent}
-              onChange={(e) => setRent(Number(e.target.value) || 0)}
+              onValueChange={setRent}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Rent growth"
               suffix="%"
               value={rentGrowth}
-              onChange={(e) => setRentGrowth(Number(e.target.value) || 0)}
+              onValueChange={setRentGrowth}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Invest return"
               suffix="%"
               value={invest}
-              onChange={(e) => setInvest(Number(e.target.value) || 0)}
+              onValueChange={setInvest}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -119,7 +119,7 @@ function HomeLoanVsRent({ meta }: CalculatorRuntimeProps) {
               value={better === "buy" ? "Buy" : "Rent + invest"}
               tone="primary"
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="EMI" value={formatINR(r.emi)} />
               <Stat label="Total rent paid" value={formatINR(r.totalRent)} tone="error" />
               <Stat label="Total buying cost" value={formatINR(r.totalBuy)} tone="error" />

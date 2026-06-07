@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { profitLoss } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -27,19 +27,19 @@ function ProfitLossCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Cost & sell</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Cost price"
               prefix="₹"
               value={cost}
-              onChange={(e) => setCost(Number(e.target.value) || 0)}
+              onValueChange={setCost}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Sell price"
               prefix="₹"
               value={sell}
-              onChange={(e) => setSell(Number(e.target.value) || 0)}
+              onValueChange={setSell}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -55,7 +55,7 @@ function ProfitLossCalculator({ meta }: CalculatorRuntimeProps) {
               value={`${r.netPct >= 0 ? "+" : ""}${r.netPct.toFixed(2)}%`}
               tone={r.profit > 0 ? "success" : r.loss > 0 ? "error" : "default"}
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Profit" value={formatINR(r.profit)} tone="success" />
               <Stat label="Loss" value={formatINR(r.loss)} tone="error" />
             </div>

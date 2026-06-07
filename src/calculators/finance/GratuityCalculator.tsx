@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat } from "@/components/calculator/Stat";
 import { calculateGratuity } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -27,18 +27,18 @@ function GratuityCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Inputs</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Last drawn salary (basic + DA)"
               prefix="₹"
               value={salary}
-              onChange={(e) => setSalary(Number(e.target.value) || 0)}
+              onValueChange={setSalary}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Years of service"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
             <p className="text-text-tertiary text-xs">Formula: (salary × 15 × years) / 26</p>
           </CardContent>

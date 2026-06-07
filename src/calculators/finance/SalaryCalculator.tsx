@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { salaryBreakdown } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -23,12 +23,12 @@ function SalaryCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>CTC</CardTitle>
           </CardHeader>
           <CardContent>
-            <Input
-              type="number"
+            <NumberInput
               label="Annual CTC"
               prefix="₹"
               value={ctc}
-              onChange={(e) => setCtc(Number(e.target.value) || 0)}
+              onValueChange={setCtc}
+              allowNegative={false}
               hint="Uses new tax regime + 12% EPF assumption"
             />
           </CardContent>
@@ -41,7 +41,7 @@ function SalaryCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6 py-4">
             <BigStat label="In-hand monthly" value={formatINR(r.inHandMonthly)} tone="primary" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="In-hand annual" value={formatINR(r.inHandAnnual)} tone="primary" />
               <Stat label="Gross annual" value={formatINR(r.gross)} />
               <Stat label="Basic" value={formatINR(r.basic)} />

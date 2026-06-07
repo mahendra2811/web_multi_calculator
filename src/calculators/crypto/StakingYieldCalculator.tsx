@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { Stat } from "@/components/calculator/Stat";
 import { calculateStakingYield } from "@/lib/calculators/crypto";
@@ -60,25 +60,25 @@ function StakingYieldCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Stake</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Principal"
               value={principal}
-              onChange={(e) => setPrincipal(Number(e.target.value) || 0)}
+              onValueChange={setPrincipal}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="APY"
               suffix="%"
               value={apy}
-              onChange={(e) => setApy(Number(e.target.value) || 0)}
+              onValueChange={setApy}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Duration"
               suffix="d"
               value={days}
-              onChange={(e) => setDays(Number(e.target.value) || 0)}
+              onValueChange={setDays}
+              allowNegative={false}
             />
             <div>
               <span className="text-text-secondary mb-2 block text-sm font-medium">Compound</span>
@@ -101,7 +101,7 @@ function StakingYieldCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Final" value={formatNumber(r.total, "en-IN", 2)} tone="primary" />
               <Stat label="Interest" value={formatNumber(r.interest, "en-IN", 2)} tone="success" />
               <Stat label="Principal" value={formatNumber(r.principal, "en-IN", 2)} />

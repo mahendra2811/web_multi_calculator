@@ -4,6 +4,7 @@ import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Button } from "@/components/ui/Button";
 import { BigStat, Stat } from "@/components/calculator/Stat";
 import { netWorth } from "@/lib/calculators/finance";
@@ -70,11 +71,11 @@ function NetWorthCalculator({ meta }: CalculatorRuntimeProps) {
                       value={a.label}
                       onChange={(e) => updateItem("a", i, "label", e.target.value)}
                     />
-                    <Input
-                      type="number"
+                    <NumberInput
                       prefix="₹"
                       value={a.value}
-                      onChange={(e) => updateItem("a", i, "value", e.target.value)}
+                      allowNegative={false}
+                      onValueChange={(n) => updateItem("a", i, "value", n)}
                     />
                   </div>
                 ))}
@@ -99,11 +100,11 @@ function NetWorthCalculator({ meta }: CalculatorRuntimeProps) {
                       value={l.label}
                       onChange={(e) => updateItem("l", i, "label", e.target.value)}
                     />
-                    <Input
-                      type="number"
+                    <NumberInput
                       prefix="₹"
                       value={l.value}
-                      onChange={(e) => updateItem("l", i, "value", e.target.value)}
+                      allowNegative={false}
+                      onValueChange={(n) => updateItem("l", i, "value", n)}
                     />
                   </div>
                 ))}
@@ -130,7 +131,7 @@ function NetWorthCalculator({ meta }: CalculatorRuntimeProps) {
               value={formatINR(r.netWorth)}
               tone={r.netWorth >= 0 ? "success" : "error"}
             />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Stat label="Total assets" value={formatINR(r.totalAssets)} tone="success" />
               <Stat label="Total liabilities" value={formatINR(r.totalLiabilities)} tone="error" />
             </div>

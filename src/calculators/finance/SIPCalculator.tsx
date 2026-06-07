@@ -1,12 +1,11 @@
 "use client";
 
 import { memo, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Slider } from "@/components/ui/Slider";
-import { Button } from "@/components/ui/Button";
+import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
 import { calculateSIP } from "@/lib/calculators/finance";
 import { formatINR } from "@/lib/format";
@@ -14,15 +13,6 @@ import { useHistory } from "@/lib/storage/stores";
 import { useTranslations } from "next-intl";
 import type { CalculatorRuntimeProps } from "@/types/calculator";
 import { track } from "@/lib/analytics/events";
-
-const GrowthChart3D = dynamic(() => import("@/components/three/GrowthChart3D"), {
-  ssr: false,
-  loading: () => (
-    <div className="bg-surface text-text-tertiary flex h-[320px] items-center justify-center rounded-xl">
-      Loading 3D…
-    </div>
-  ),
-});
 
 const DEFAULTS = { monthly: 10000, rate: 12, years: 10 };
 
@@ -32,7 +22,6 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
   const [monthly, setMonthly] = useState(DEFAULTS.monthly);
   const [rate, setRate] = useState(DEFAULTS.rate);
   const [years, setYears] = useState(DEFAULTS.years);
-  const [view3D, setView3D] = useState(false);
   const push = useHistory((s) => s.push);
 
   const result = useMemo(
@@ -75,11 +64,13 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
           </CardHeader>
           <CardContent className="flex flex-col gap-6">
             <div>
-              <Input
+              <NumberInput
                 label={t("monthlyInvestment")}
-                type="number"
                 value={monthly}
-                onChange={(e) => setMonthly(Number(e.target.value) || 0)}
+                onValueChange={setMonthly}
+                min={500}
+                max={200000}
+                allowNegative={false}
                 prefix="₹"
               />
               <Slider
@@ -92,11 +83,13 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
+              <NumberInput
                 label={t("annualReturn")}
-                type="number"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value) || 0)}
+                onValueChange={setRate}
+                min={1}
+                max={30}
+                allowNegative={false}
                 suffix="%"
               />
               <Slider
@@ -109,11 +102,13 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
               />
             </div>
             <div>
-              <Input
+              <NumberInput
                 label={t("duration")}
-                type="number"
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value) || 0)}
+                onValueChange={setYears}
+                min={1}
+                max={40}
+                allowNegative={false}
                 suffix="yr"
               />
               <Slider
@@ -131,7 +126,7 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-4 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat
                 label={t("investedAmount")}
                 value={formatINR(result.invested)}
@@ -142,64 +137,16 @@ function SIPCalculator({ meta }: CalculatorRuntimeProps) {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardHeader className="pb-2">
               <CardTitle className="text-base">Growth over time</CardTitle>
-              <div className="border-border flex gap-1 rounded-lg border p-0.5">
-                <Button
-                  size="sm"
-                  variant={view3D ? "ghost" : "primary"}
-                  onClick={() => {
-                    setView3D(false);
-                    track.view3DToggle(meta.id, "2d");
-                  }}
-                >
-                  {tCommon("view2D")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant={view3D ? "primary" : "ghost"}
-                  onClick={() => {
-                    setView3D(true);
-                    track.view3DToggle(meta.id, "3d");
-                  }}
-                >
-                  {tCommon("view3D")}
-                </Button>
-              </div>
             </CardHeader>
             <CardContent>
-              {view3D ? (
-                <GrowthChart3D data={result.schedule} />
-              ) : (
-                <GrowthChart data={result.schedule} />
-              )}
+              <GrowthChart data={result.schedule} />
             </CardContent>
           </Card>
         </div>
       }
     />
-  );
-}
-
-function Stat({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone: "primary" | "secondary" | "accent";
-}) {
-  const colorMap = {
-    primary: "text-primary",
-    secondary: "text-secondary",
-    accent: "text-accent",
-  };
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-text-tertiary text-xs tracking-wide uppercase">{label}</span>
-      <span className={`text-xl font-bold tabular-nums ${colorMap[tone]}`}>{value}</span>
-    </div>
   );
 }
 

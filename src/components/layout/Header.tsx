@@ -11,6 +11,7 @@ import { HeaderCategoryMenu } from "./HeaderCategoryMenu";
 import { HeaderAllCategoriesMenu } from "./HeaderAllCategoriesMenu";
 import { HeaderProfileMenu } from "./HeaderProfileMenu";
 import { MobileDrawer } from "./MobileDrawer";
+import { NavigationProgress } from "./NavigationProgress";
 import { useSearchPalette } from "@/lib/storage/search-palette";
 import { StreakBadge } from "@/components/pwa/StreakBadge";
 
@@ -120,6 +121,7 @@ export function Header() {
             </Button>
           </div>
         </div>
+        <NavigationProgress />
       </header>
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </>

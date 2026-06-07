@@ -3,7 +3,7 @@
 import { memo, useMemo, useState } from "react";
 import { CalculatorShell } from "@/components/calculator/CalculatorShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+import { NumberInput } from "@/components/ui/NumberInput";
 import { Stat } from "@/components/calculator/Stat";
 import { GrowthChart } from "@/components/charts/GrowthChart";
 import { calculateSimpleInterest } from "@/lib/calculators/finance";
@@ -41,26 +41,26 @@ function SimpleInterestCalculator({ meta }: CalculatorRuntimeProps) {
             <CardTitle>Loan / deposit</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Input
-              type="number"
+            <NumberInput
               label="Principal"
               prefix="₹"
               value={principal}
-              onChange={(e) => setPrincipal(Number(e.target.value) || 0)}
+              onValueChange={setPrincipal}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Rate"
               suffix="%"
               value={rate}
-              onChange={(e) => setRate(Number(e.target.value) || 0)}
+              onValueChange={setRate}
+              allowNegative={false}
             />
-            <Input
-              type="number"
+            <NumberInput
               label="Time"
               suffix="yr"
               value={years}
-              onChange={(e) => setYears(Number(e.target.value) || 0)}
+              onValueChange={setYears}
+              allowNegative={false}
             />
           </CardContent>
         </Card>
@@ -68,7 +68,7 @@ function SimpleInterestCalculator({ meta }: CalculatorRuntimeProps) {
       result={
         <div className="flex flex-col gap-4">
           <Card>
-            <CardContent className="grid grid-cols-3 gap-3 pt-6">
+            <CardContent className="grid grid-cols-1 gap-3 pt-6 sm:grid-cols-3">
               <Stat label="Invested" value={formatINR(r.invested)} tone="secondary" />
               <Stat label="Interest" value={formatINR(r.interest)} tone="accent" />
               <Stat label="Total" value={formatINR(r.total)} tone="primary" />

@@ -58,7 +58,7 @@ function DateDiffCalculator({ meta }: CalculatorRuntimeProps) {
             {r ? (
               <>
                 <BigStat label="Days" value={formatNumber(r.days, "en-IN", 0)} />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Stat label="Weeks" value={formatNumber(r.weeks, "en-IN", 2)} />
                   <Stat label="Months" value={formatNumber(r.months, "en-IN", 2)} />
                   <Stat label="Years" value={formatNumber(r.years, "en-IN", 3)} />
