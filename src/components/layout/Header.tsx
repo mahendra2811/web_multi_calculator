@@ -51,9 +51,7 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openSearch = useSearchPalette((s) => s.setOpen);
-  const { resolvedTheme } = useTheme();
-  const logoSrc =
-    resolvedTheme === "dark" ? "/logo/secondary-dark-logo.png" : "/logo/master-logo.png";
+  const logoSrc = "/logo/calcMasterNewLogo.png";
 
   const topCategories = TOP_CAT_IDS.map((id) => getCategoryBySlug(id)).filter(
     (c): c is NonNullable<ReturnType<typeof getCategoryBySlug>> => Boolean(c),

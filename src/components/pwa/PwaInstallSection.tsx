@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Download, Smartphone, Monitor, CheckCircle2, Wifi, Zap, Shield } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeProvider";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -41,9 +40,7 @@ export function PwaInstallSection() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [state, setState] = useState<"idle" | "installing" | "done">("idle");
   const [showSteps, setShowSteps] = useState(false);
-  const { resolvedTheme } = useTheme();
-  const logoSrc =
-    resolvedTheme === "dark" ? "/logo/secondary-dark-logo.png" : "/logo/master-logo.png";
+  const logoSrc = "/logo/calcMasterNewLogo.png";
 
   useEffect(() => {
     const handler = (e: Event) => {

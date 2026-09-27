@@ -66,16 +66,16 @@ export default function PrivacyPage() {
       <p className="text-text-secondary mt-3">
         If notifications are available and you choose to enable them, your browser asks for
         permission. We receive a push subscription endpoint and encryption keys to deliver
-        notifications through your browser&apos;s push provider. You can unsubscribe in Settings or
-        block notifications in your browser settings.
+        notifications through your browser&apos;s push provider. You can block notifications in your
+        browser settings and contact us to request deletion of a stored subscription.
       </p>
 
       <h2 className="text-text mt-8 text-lg font-semibold">Retention and your choices</h2>
       <p className="text-text-secondary mt-3">
         Local preferences remain until you clear them; saved history is limited to the latest 200
-        entries. Analytics retention follows the settings of our Google Analytics property.
-        Unsubscribing in the app requests deletion of your stored push subscription. If you email
-        us, we receive your email address and message to handle your request. Contact us below with
+        entries. Analytics retention follows the settings of our Google Analytics property. Expired
+        push subscriptions are removed when our delivery service detects them. If you email us, we
+        receive your email address and message to handle your request. Contact us below with
         questions or requests about access to or deletion of data held by us.
       </p>
 
@@ -87,9 +87,8 @@ export default function PrivacyPage() {
 
       <h2 className="text-text mt-8 text-lg font-semibold">Children&apos;s privacy</h2>
       <p className="text-text-secondary mt-3">
-        CalcMaster does not require an account or ask for your age. If you believe a child has
-        provided personal information to us, please contact us so we can investigate and address the
-        request.
+        If you believe a child has provided personal information to us, please contact us so we can
+        investigate and address the request.
       </p>
 
       <h2 className="text-text mt-8 text-lg font-semibold">Changes to this policy</h2>

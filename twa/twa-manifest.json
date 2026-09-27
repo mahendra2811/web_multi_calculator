@@ -23,9 +23,9 @@
     "path": "/home/pooniya/calcmaster-release.keystore",
     "alias": "calcmaster"
   },
-  "appVersionName": "1.0.1",
-  "appVersion": "1.0.1",
-  "appVersionCode": 2,
+  "appVersionName": "1.0.2",
+  "appVersion": "1.0.2",
+  "appVersionCode": 3,
   "minSdkVersion": 23,
   "enableSiteSettingsShortcut": false,
   "isChromeOSOnly": false,

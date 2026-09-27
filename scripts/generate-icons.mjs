@@ -1,6 +1,6 @@
 /**
- * Generates all PWA + favicon icons for CalcMaster from the master logo.
- * Source: public/logo/master-logo.png
+ * Generates web, PWA, and Android icons from the current CalcMaster logo.
+ * Source: public/logo/calcMasterNewLogo.png
  * Run: node scripts/generate-icons.mjs
  */
 
@@ -12,17 +12,18 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const ICONS_DIR = resolve(ROOT, "public/icons");
-const MASTER_LOGO = resolve(ROOT, "public/logo/master-logo.png");
+const LOGO_SOURCE = resolve(ROOT, "public/logo/calcMasterNewLogo.png");
+const ANDROID_RES = resolve(ROOT, "twa/app/src/main/res");
 
-// Teal brand color matching --primary: #0D9488
-const PRIMARY_BG = { r: 13, g: 148, b: 136, alpha: 1 };
+// The supplied artwork already has a white background at its corners.
+const ICON_BG = { r: 255, g: 255, b: 255, alpha: 1 };
 
 mkdirSync(ICONS_DIR, { recursive: true });
 
 /** Resize master logo to a square PNG buffer. */
 async function logoToSize(size, { preserveAlpha = false } = {}) {
-  const image = sharp(MASTER_LOGO)
-    .resize(size, size, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } })
+  const image = sharp(LOGO_SOURCE)
+    .resize(size, size, { fit: "contain", background: ICON_BG })
     .png();
 
   if (preserveAlpha) {
@@ -33,21 +34,21 @@ async function logoToSize(size, { preserveAlpha = false } = {}) {
 }
 
 /**
- * Maskable icon: logo centered inside the safe zone on a teal background.
+ * Maskable icon: logo centered inside the safe zone on a white background.
  * Safe zone = inner 80% circle → logo lives inside ~72% of the icon size.
  */
 async function makeMaskable(size) {
   const logoSize = Math.round(size * 0.72);
   const offset = Math.round((size - logoSize) / 2);
 
-  const logoBuf = await sharp(MASTER_LOGO)
-    .resize(logoSize, logoSize, { fit: "contain", background: PRIMARY_BG })
-    .flatten({ background: PRIMARY_BG })
+  const logoBuf = await sharp(LOGO_SOURCE)
+    .resize(logoSize, logoSize, { fit: "contain", background: ICON_BG })
+    .flatten({ background: ICON_BG })
     .png()
     .toBuffer();
 
   return sharp({
-    create: { width: size, height: size, channels: 4, background: PRIMARY_BG },
+    create: { width: size, height: size, channels: 4, background: ICON_BG },
   })
     .composite([{ input: logoBuf, left: offset, top: offset }])
     .png()
@@ -55,21 +56,21 @@ async function makeMaskable(size) {
 }
 
 /**
- * Shortcut icon: master logo on a teal background, slightly smaller logo for
+ * Shortcut icon: current logo on a white background, slightly smaller for
  * visual breathing room.
  */
 async function makeShortcut(size) {
   const logoSize = Math.round(size * 0.8);
   const offset = Math.round((size - logoSize) / 2);
 
-  const logoBuf = await sharp(MASTER_LOGO)
-    .resize(logoSize, logoSize, { fit: "contain", background: PRIMARY_BG })
-    .flatten({ background: PRIMARY_BG })
+  const logoBuf = await sharp(LOGO_SOURCE)
+    .resize(logoSize, logoSize, { fit: "contain", background: ICON_BG })
+    .flatten({ background: ICON_BG })
     .png()
     .toBuffer();
 
   return sharp({
-    create: { width: size, height: size, channels: 4, background: PRIMARY_BG },
+    create: { width: size, height: size, channels: 4, background: ICON_BG },
   })
     .composite([{ input: logoBuf, left: offset, top: offset }])
     .png()
@@ -78,7 +79,7 @@ async function makeShortcut(size) {
 
 async function run() {
   // Standard PWA icon sizes
-  for (const size of [72, 96, 128, 144, 152, 192, 384, 512]) {
+  for (const size of [32, 72, 96, 128, 144, 152, 192, 384, 512]) {
     const buf = await logoToSize(size);
     writeFileSync(resolve(ICONS_DIR, `icon-${size}.png`), buf);
     console.log(`✓  icon-${size}.png`);
@@ -112,7 +113,32 @@ async function run() {
   writeFileSync(resolve(ICONS_DIR, "og-icon.png"), ogBuf);
   console.log("✓  og-icon.png");
 
-  console.log("\nAll icons generated from master-logo.png.");
+  // Bubblewrap normally downloads the live PWA icons. Generate its native
+  // resources locally so an unreleased web-logo change reaches this AAB.
+  writeFileSync(resolve(ROOT, "twa/store_icon.png"), ogBuf);
+  const densities = [
+    ["mdpi", 48, 82, 300],
+    ["hdpi", 72, 123, 450],
+    ["xhdpi", 96, 164, 600],
+    ["xxhdpi", 144, 246, 900],
+    ["xxxhdpi", 192, 328, 1200],
+  ];
+  for (const [density, launcherSize, maskableSize, splashSize] of densities) {
+    writeFileSync(
+      resolve(ANDROID_RES, `mipmap-${density}/ic_launcher.png`),
+      await logoToSize(launcherSize, { preserveAlpha: true }),
+    );
+    writeFileSync(
+      resolve(ANDROID_RES, `mipmap-${density}/ic_maskable.png`),
+      await makeMaskable(maskableSize),
+    );
+    writeFileSync(
+      resolve(ANDROID_RES, `drawable-${density}/splash.png`),
+      await logoToSize(splashSize, { preserveAlpha: true }),
+    );
+  }
+
+  console.log("\nAll web and Android icons generated from calcMasterNewLogo.png.");
 }
 
 // Minimal ICO builder (PNG frames embedded in ICO container)

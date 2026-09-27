@@ -31,7 +31,7 @@ const serwist = new Serwist({
     {
       matcher: ({ url }) => url.pathname.startsWith("/icons/") || url.pathname.startsWith("/logo/"),
       handler: new CacheFirst({
-        cacheName: "static-images-cache",
+        cacheName: "static-images-cache-v2",
         plugins: [new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 })],
       }),
     },

@@ -42,7 +42,7 @@ export function generateDefaultFaqs(meta: CalculatorMeta): FaqItem[] {
     },
     {
       q: `Does the ${name} work on mobile?`,
-      a: `Yes. CalcMaster is fully responsive and installable as a PWA — on Android tap the browser menu → "Add to Home Screen"; on iOS Safari → Share → "Add to Home Screen". After installing, the ${name} works offline.`,
+      a: `Yes. CalcMaster is fully responsive and installable as a PWA — on Android tap the browser menu → "Add to Home Screen"; on iOS Safari → Share → "Add to Home Screen". Previously cached calculator pages can work offline after an online visit.`,
     },
     {
       q: `Where is my input stored?`,

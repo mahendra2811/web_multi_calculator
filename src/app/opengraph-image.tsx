@@ -8,11 +8,10 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  // OG card uses dark bg → dark logo blends in; fallback to master for local dev
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : (process.env.NEXT_PUBLIC_APP_URL ?? SITE.url);
-  const logoUrl = `${baseUrl}/logo/secondary-dark-logo.png`;
+  const logoUrl = `${baseUrl}/logo/calcMasterNewLogo.png`;
 
   return new ImageResponse(
     <div
@@ -100,7 +99,7 @@ export default async function Image() {
             border: "1px solid rgba(255,255,255,0.25)",
           }}
         >
-          Zero tracking
+          Local calculations
         </span>
       </div>
     </div>,
