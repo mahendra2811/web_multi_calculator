@@ -1,23 +1,15 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import withPWAInit from "@ducanh2912/next-pwa";
+import withSerwistInit from "@serwist/next";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const withPWA = withPWAInit({
-  dest: "public",
-  register: true,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
-  reloadOnOnline: true,
+const withSerwist = withSerwistInit({
+  swSrc: "src/app/sw.ts",
+  swDest: "public/sw.js",
+  // A service worker serving yesterday's bundle while you edit is an afternoon lost.
   disable: process.env.NODE_ENV === "development",
-  // Merge our push handler into the generated SW
-  customWorkerSrc: "public",
-  customWorkerDest: "public",
-  workboxOptions: {
-    disableDevLogs: true,
-    importScripts: ["/sw-push.js"],
-  },
+  reloadOnOnline: true,
 });
 
 const nextConfig: NextConfig = {
@@ -33,4 +25,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPWA(withNextIntl(nextConfig));
+export default withSerwist(withNextIntl(nextConfig));

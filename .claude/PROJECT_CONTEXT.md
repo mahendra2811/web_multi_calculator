@@ -30,7 +30,7 @@ Key differentiators vs. the mobile app:
 | next-intl                             | 4.x     | i18n (en, hi)                           |
 | @supabase/supabase-js + @supabase/ssr | latest  | Optional cloud sync                     |
 | decimal.js / mathjs                   | latest  | Precise math                            |
-| @ducanh2912/next-pwa                  | latest  | PWA support                             |
+| serwist + @serwist/next               | latest  | PWA / service worker                    |
 | Vitest                                | 4.x     | Unit tests for math helpers             |
 | Husky + lint-staged                   | latest  | Pre-commit hooks                        |
 
@@ -184,7 +184,7 @@ Finance (24) + Math (12) + Health (8) + Converter (10) + Date/Time (5) + Crypto/
 
 ```bash
 npm run dev          # turbopack dev
-npm run build        # production build
+npm run build        # production build (uses --webpack; required by Serwist)
 npm run start        # serve build
 npm run lint         # eslint
 npm run typecheck    # tsc --noEmit

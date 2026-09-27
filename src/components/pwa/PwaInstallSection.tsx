@@ -24,7 +24,7 @@ function detectPlatform(): Platform {
 const BENEFITS = [
   { icon: Wifi, label: "Works Offline", color: "text-success" },
   { icon: Zap, label: "Instant Access", color: "text-accent" },
-  { icon: Shield, label: "100% Private", color: "text-primary" },
+  { icon: Shield, label: "Local Calculations", color: "text-primary" },
 ];
 
 const IOS_STEPS = [

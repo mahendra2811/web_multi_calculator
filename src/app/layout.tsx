@@ -9,6 +9,7 @@ import { MobileTabBar } from "@/components/layout/MobileTabBar";
 import { Analytics } from "@/components/analytics/Analytics";
 import { WebVitals } from "@/components/analytics/WebVitals";
 import { SearchPalette } from "@/components/search/SearchPalette";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { AppUpdateBanner } from "@/components/pwa/AppUpdateBanner";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
@@ -148,6 +149,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <Footer />
           <MobileTabBar />
           <SearchPalette />
+          <ServiceWorkerRegister />
           <InstallPrompt />
           <PushOptIn />
           <AppUpdateBanner />

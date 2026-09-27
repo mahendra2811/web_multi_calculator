@@ -16,8 +16,9 @@ export default function AboutPage() {
       <h1 className="text-text text-3xl font-bold">About {SITE.name}</h1>
       <p className="text-text-secondary mt-4">
         {SITE.name} is a free collection of calculators for everyday finance, math, health, unit
-        conversion, date, and crypto/stock tasks. It runs entirely in your browser, works offline,
-        and tracks nothing.
+        conversion, date, and crypto/stock tasks. Calculations run on your device, and previously
+        cached pages can be used offline. See our privacy policy below for details about analytics
+        and optional notifications.
       </p>
 
       <h2 className="text-text mt-8 text-lg font-semibold">What&apos;s inside</h2>

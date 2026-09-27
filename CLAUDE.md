@@ -367,3 +367,22 @@ That's it. After saving these three pieces, the calculator gets:
 - GA4 tracking on open / calculate / share / favorite
 
 — all automatically, with zero additional wiring.
+
+---
+
+## PWA / Play Store
+
+CalcMaster ships as an installable PWA and a Play Store TWA. Two things about the
+build are load-bearing:
+
+- **`npm run build` must keep `--webpack`.** Next 16 defaults to Turbopack, and
+  Serwist's webpack plugin silently produces no `public/sw.js` under it — which
+  is precisely the bug this project had (a manifest and an install prompt, but no
+  service worker, so Chrome never offered installation). Verify with
+  `npm run build && ls -la public/sw.js`.
+- **`src/app/sw.ts` holds the web-push handlers.** They used to live in
+  `public/sw-push.js`, which `@ducanh2912/next-pwa` merged in via `importScripts`.
+  Serwist has no equivalent merge step, so the handlers are in `sw.ts` directly.
+
+Full detail, store listing copy and the release runbook: `docs/pwa/README.md`.
+The shared method for all five tool sites: `~/Documents/p_project/pwa-playbook/`.

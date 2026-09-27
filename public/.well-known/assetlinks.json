@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.pooniya.calcmaster",
+      "sha256_cert_fingerprints": [
+        "76:0E:52:8A:E3:6F:A5:F6:CF:98:C3:14:AC:28:41:3A:0B:C9:4F:D9:00:85:A8:5B:0A:85:DB:D1:74:92:E6:04"
+      ]
+    }
+  }
+]

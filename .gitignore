@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Serwist build output
+public/sw.js
+public/sw.js.map
+
+# TWA build outputs — regenerated on demand by `bubblewrap build`.
+# Commit twa-manifest.json, build.gradle and gradle/; never the artifacts,
+# and never a keystore.
+twa/app-release-*.aab
+twa/app-release-*.apk
+twa/app-release-*.idsig
+twa/build/
+twa/.gradle/
+twa/app/build/
+twa/*.keystore
+twa/*.keystore.*
+twa/keystore.properties

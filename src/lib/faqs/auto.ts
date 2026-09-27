@@ -46,7 +46,7 @@ export function generateDefaultFaqs(meta: CalculatorMeta): FaqItem[] {
     },
     {
       q: `Where is my input stored?`,
-      a: `Nowhere by default. Your inputs live in your browser's memory while you're on the page; a copy of your recent calculations is saved to localStorage on your device so the History page works. Nothing is sent to a server unless you explicitly enable cloud sync.`,
+      a: `Your inputs live in your browser's memory while you're on the page; a copy of your recent calculations is saved to localStorage on your device so the History page works. Calculation history stays on your device. See our Privacy Policy for details about website analytics and optional notifications.`,
     },
     {
       q: `Can I trust the formula in the ${name}?`,
