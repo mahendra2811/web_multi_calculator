@@ -52,8 +52,8 @@ export function scheduleSameSessionReminder(reminder: Reminder): void {
   setTimeout(() => {
     new Notification(`⏰ ${reminder.calculatorName} Reminder`, {
       body: `Time to use ${reminder.calculatorName} on CalcMaster`,
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-96.png",
+      icon: "/icons/v2/icon-192.png",
+      badge: "/icons/v2/icon-96.png",
       tag: `reminder-${reminder.calculatorSlug}`,
     });
   }, delay);

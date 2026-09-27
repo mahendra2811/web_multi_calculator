@@ -29,7 +29,8 @@ const serwist = new Serwist({
       }),
     },
     {
-      matcher: ({ url }) => url.pathname.startsWith("/icons/") || url.pathname.startsWith("/logo/"),
+      matcher: ({ url }) =>
+        url.pathname.startsWith("/icons/v2/") || url.pathname.startsWith("/logo/"),
       handler: new CacheFirst({
         cacheName: "static-images-cache-v2",
         plugins: [new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 })],
@@ -96,8 +97,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title ?? "CalcMaster", {
       body: payload.body ?? "",
-      icon: payload.icon ?? "/icons/icon-192.png",
-      badge: payload.badge ?? "/icons/icon-96.png",
+      icon: payload.icon ?? "/icons/v2/icon-192.png",
+      badge: payload.badge ?? "/icons/v2/icon-96.png",
       tag: payload.tag ?? "calcmaster",
       data: { url: payload.url ?? "/" },
     }),

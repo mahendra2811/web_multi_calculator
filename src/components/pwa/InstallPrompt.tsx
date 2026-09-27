@@ -52,7 +52,7 @@ export function InstallPrompt() {
       <div className="border-border bg-surface-elevated/95 rounded-2xl border p-4 shadow-2xl shadow-black/30 backdrop-blur-md">
         <div className="mb-3 flex items-start gap-3">
           <Image
-            src="/icons/icon-96.png"
+            src="/icons/v2/icon-96.png"
             alt="CalcMaster"
             width={44}
             height={44}

@@ -29,7 +29,7 @@ export function organizationSchema() {
     "@type": "Organization",
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/icons/icon-512.png`,
+    logo: `${SITE.url}/icons/v2/icon-512.png`,
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
@@ -80,7 +80,7 @@ export function articleSchema(a: ArticleSchemaInput) {
     publisher: {
       "@type": "Organization",
       name: SITE.name,
-      logo: { "@type": "ImageObject", url: `${SITE.url}/icons/icon-512.png` },
+      logo: { "@type": "ImageObject", url: `${SITE.url}/icons/v2/icon-512.png` },
     },
   };
 }

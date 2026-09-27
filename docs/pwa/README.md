@@ -7,7 +7,7 @@
 | Package ID                   | `com.pooniya.calcmaster`                                                                          |
 | Launcher name                | CalcMaster                                                                                        |
 | Website                      | `https://calcmaster.pooniya.com`                                                                  |
-| Version name / code          | `1.0.2` / `3`                                                                                     |
+| Version name / code          | `1.0.3` / `4`                                                                                     |
 | Target / minimum Android API | `36` / `23`                                                                                       |
 | Upload keystore              | `~/calcmaster-release.keystore`, alias `calcmaster`                                               |
 | Keystore credentials         | `~/calcmaster-keystore-credentials.txt` — keep private                                            |
@@ -18,6 +18,7 @@ outside this repository. Never upload either file to a store listing or commit t
 
 The icons, launcher images, splash artwork, and favicon for this release are generated
 from `public/logo/calcMasterNewLogo.png` by `node scripts/generate-icons.mjs`.
+The website uses `/icons/v2/` URLs to refresh browser and installed-app caches.
 
 ## Files for this release
 

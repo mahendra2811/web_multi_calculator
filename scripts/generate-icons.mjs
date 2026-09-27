@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const ICONS_DIR = resolve(ROOT, "public/icons");
+const VERSIONED_ICONS_DIR = resolve(ICONS_DIR, "v2");
 const LOGO_SOURCE = resolve(ROOT, "public/logo/calcMasterNewLogo.png");
 const ANDROID_RES = resolve(ROOT, "twa/app/src/main/res");
 
@@ -19,6 +20,12 @@ const ANDROID_RES = resolve(ROOT, "twa/app/src/main/res");
 const ICON_BG = { r: 255, g: 255, b: 255, alpha: 1 };
 
 mkdirSync(ICONS_DIR, { recursive: true });
+mkdirSync(VERSIONED_ICONS_DIR, { recursive: true });
+
+function writeIcon(name, data) {
+  writeFileSync(resolve(ICONS_DIR, name), data);
+  writeFileSync(resolve(VERSIONED_ICONS_DIR, name), data);
+}
 
 /** Resize master logo to a square PNG buffer. */
 async function logoToSize(size, { preserveAlpha = false } = {}) {
@@ -81,36 +88,37 @@ async function run() {
   // Standard PWA icon sizes
   for (const size of [32, 72, 96, 128, 144, 152, 192, 384, 512]) {
     const buf = await logoToSize(size);
-    writeFileSync(resolve(ICONS_DIR, `icon-${size}.png`), buf);
+    writeIcon(`icon-${size}.png`, buf);
     console.log(`✓  icon-${size}.png`);
   }
 
   // Maskable icon (full-bleed with safe zone)
   const maskBuf = await makeMaskable(512);
-  writeFileSync(resolve(ICONS_DIR, "icon-512-maskable.png"), maskBuf);
+  writeIcon("icon-512-maskable.png", maskBuf);
   console.log("✓  icon-512-maskable.png");
 
   // Apple touch icon (iOS home screen)
   const appleBuf = await logoToSize(180);
-  writeFileSync(resolve(ICONS_DIR, "apple-touch-icon.png"), appleBuf);
+  writeIcon("apple-touch-icon.png", appleBuf);
   console.log("✓  apple-touch-icon.png");
 
   // PWA shortcut icons (SIP / EMI / BMI quick-launch)
   for (const name of ["shortcut-sip.png", "shortcut-emi.png", "shortcut-bmi.png"]) {
     const buf = await makeShortcut(96);
-    writeFileSync(resolve(ICONS_DIR, name), buf);
+    writeIcon(name, buf);
     console.log(`✓  ${name}`);
   }
 
   // favicon.ico — 16 + 32 + 48 frames
   const frames = await Promise.all([16, 32, 48].map((s) => logoToSize(s, { preserveAlpha: true })));
   const ico = buildIco(frames, [16, 32, 48]);
-  writeFileSync(resolve(ROOT, "src/app/favicon.ico"), ico);
+  writeFileSync(resolve(ROOT, "public/favicon.ico"), ico);
+  writeFileSync(resolve(VERSIONED_ICONS_DIR, "favicon.ico"), ico);
   console.log("✓  favicon.ico");
 
   // OG icon (used in push notifications)
   const ogBuf = await logoToSize(512);
-  writeFileSync(resolve(ICONS_DIR, "og-icon.png"), ogBuf);
+  writeIcon("og-icon.png", ogBuf);
   console.log("✓  og-icon.png");
 
   // Bubblewrap normally downloads the live PWA icons. Generate its native

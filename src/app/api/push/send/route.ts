@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await sendPushToAll({
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-96.png",
+      icon: "/icons/v2/icon-192.png",
+      badge: "/icons/v2/icon-96.png",
       ...payload,
     });
 

@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
     body: tip.body,
     url: tip.url,
     tag: tip.tag,
-    icon: "/icons/icon-192.png",
-    badge: "/icons/icon-96.png",
+    icon: "/icons/v2/icon-192.png",
+    badge: "/icons/v2/icon-96.png",
   });
 
   return NextResponse.json({ tip: tip.tag, ...result });
